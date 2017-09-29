@@ -1,6 +1,5 @@
 package net.team33.reflect;
 
-import net.team33.reflect.reflect.fields.ToStream;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
 import org.junit.Assert;
@@ -10,7 +9,7 @@ public class FieldNameTest {
 
     @Test
     public final void simple() {
-        ToStream.FLAT.apply(Sample.class).forEach(field -> {
+        FieldStream.FLAT.apply(Sample.class).forEach(field -> {
             Assert.assertEquals(
                     field.getName(),
                     FieldName.SIMPLE.apply(field)
@@ -20,7 +19,7 @@ public class FieldNameTest {
 
     @Test
     public final void qualified() {
-        ToStream.FLAT.apply(Sample.class).forEach(field -> {
+        FieldStream.FLAT.apply(Sample.class).forEach(field -> {
             Assert.assertEquals(
                     "net.team33.reflect.test.Sample." + field.getName(),
                     FieldName.QUALIFIED.apply(field)
@@ -38,7 +37,7 @@ public class FieldNameTest {
 
     @Test
     public final void prefixed() {
-        ToStream.FLAT.apply(Sample.class).forEach(field -> {
+        FieldStream.FLAT.apply(Sample.class).forEach(field -> {
             Assert.assertEquals(
                     field.getName(),
                     FieldName.PREFIXED.apply(Sample.class).apply(field)
