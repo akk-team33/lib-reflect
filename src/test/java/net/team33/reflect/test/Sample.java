@@ -9,8 +9,8 @@ import java.util.List;
         "RedundantStringConstructorCall"})
 public class Sample {
 
-    public static final String aStaticFinalField = "aStaticFinalField";
-    private static String aStaticField = "aStaticField";
+    public static final String aPublicStaticFinalField = "aPublicStaticFinalField";
+    private static String aPrivateStaticField = "aPrivateStaticField";
 
     public final String aPublicFinalField = new String("Sample.aPublicFinalField");
     public final transient String aPublicFinalTransientField = "Sample.aPublicFinalTransientField";
@@ -24,15 +24,15 @@ public class Sample {
     private String aPrivateField = "Sample.aPrivateField";
 
     public static String getAStaticFinalField() {
-        return aStaticFinalField;
+        return aPublicStaticFinalField;
     }
 
     public static String getAStaticField() {
-        return aStaticField;
+        return aPrivateStaticField;
     }
 
     public static void setAStaticField(final String aStaticField) {
-        Sample.aStaticField = aStaticField;
+        Sample.aPrivateStaticField = aStaticField;
     }
 
     @SuppressWarnings("TypeMayBeWeakened")

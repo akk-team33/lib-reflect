@@ -9,8 +9,9 @@ import java.util.List;
         "FieldNameHidesFieldInSuperclass"})
 public class SampleEx extends Sample {
 
-    public static final String aStaticFinalField = "aStaticFinalField";
-    private static String aStaticField = "aStaticField";
+    public static final String aPublicStaticFinalField = "aPublicStaticFinalField";
+    private static String aPrivateStaticField = "aPrivateStaticField";
+
     public final String aPublicFinalField = "Sample.aPublicFinalField";
     public final transient String aPublicFinalTransientField = "Sample.aPublicFinalTransientField";
     protected final String aProtectedFinalField = "Sample.aProtectedFinalField";
