@@ -9,8 +9,8 @@ import java.util.List;
         "RedundantStringConstructorCall"})
 public class Sample {
 
-    public static final String aPublicStaticFinalField = "aPublicStaticFinalField";
-    private static String aPrivateStaticField = "aPrivateStaticField";
+    public static final String aPublicStaticFinalField = "Sample.aPublicStaticFinalField";
+    private static String aPrivateStaticField = "Sample.aPrivateStaticField";
 
     public final String aPublicFinalField = new String("Sample.aPublicFinalField");
     public final transient String aPublicFinalTransientField = "Sample.aPublicFinalTransientField";

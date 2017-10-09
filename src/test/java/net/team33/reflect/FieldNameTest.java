@@ -9,12 +9,10 @@ public class FieldNameTest {
 
     @Test
     public final void simple() {
-        FieldStream.FLAT.apply(Sample.class).forEach(field -> {
-            Assert.assertEquals(
-                    field.getName(),
-                    FieldName.SIMPLE.apply(field)
-            );
-        });
+        FieldStream.FLAT.apply(Sample.class).forEach(field -> Assert.assertEquals(
+                field.getName(),
+                FieldName.SIMPLE.apply(field)
+        ));
     }
 
     @Test
