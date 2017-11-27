@@ -5,9 +5,9 @@ import net.team33.reflect.test.Sample;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FieldMapTest {
+public class FieldsTest {
 
-    private final FieldMapper<Sample> mapper = FieldMapper.of(Sample.class).build();
+    private final Fields<Sample> mapper = Fields.of(Sample.class).build();
     private Randomizer randomizer = new Randomizer();
 
     @Test
