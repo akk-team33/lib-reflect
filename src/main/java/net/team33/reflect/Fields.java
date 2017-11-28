@@ -138,13 +138,7 @@ public final class Fields<T> {
 
             @Override
             public final Map.Entry<String, Object> next() {
-                final Map.Entry<String, Field> next = core.next();
-                final String key = next.getKey();
-                try {
-                    return new AbstractMap.SimpleImmutableEntry<>(key, next.getValue().get(sample));
-                } catch (final IllegalAccessException caught) {
-                    throw new IllegalStateException("cannot get field [" + key + "]", caught);
-                }
+                return new FieldEntry(core.next(), sample);
             }
         }
     }
