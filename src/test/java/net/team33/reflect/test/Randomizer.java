@@ -7,7 +7,7 @@ public class Randomizer {
     private final Random random = new Random();
     private final int stringMinLength = 3;
     private final int stringMaxLength = 16;
-    private final char[] stringCharSet = "0123456789 abcdefghijklmnopqrstuvwxyz-ABCDEFGHIJKLMNOPQRSTUVWXYZ_"
+    private final char[] stringCharSet = "0123456789 abcdefghijklmnopqrstuvwxyzäöüß-ABCDEFGHIJKLMNOPQRSTUVWXYZÄÖÜ_"
             .toCharArray();
 
     public final String nextString() {

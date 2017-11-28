@@ -49,6 +49,6 @@ public class FieldEntry implements Map.Entry<String, Object> {
 
     @Override
     public final String toString() {
-        return "(" + getKey() + " -> " + getValue() + ")";
+        return getKey() + "=" + getValue();
     }
 }

@@ -1,7 +1,5 @@
-package net.team33.reflect.alt;
+package net.team33.reflect;
 
-import net.team33.reflect.FieldName;
-import net.team33.reflect.FieldStream;
 import net.team33.reflect.test.Randomizer;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
@@ -10,7 +8,7 @@ import org.junit.Test;
 
 public class FieldsTest {
 
-    private Randomizer randomizer = new Randomizer();
+    private final Randomizer randomizer = new Randomizer();
 
     @Test
     public final void sample() {

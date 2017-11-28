@@ -1,8 +1,4 @@
-package net.team33.reflect.alt;
-
-import net.team33.reflect.FieldFilter;
-import net.team33.reflect.FieldName;
-import net.team33.reflect.FieldStream;
+package net.team33.reflect;
 
 import java.lang.reflect.Field;
 import java.util.AbstractMap;
