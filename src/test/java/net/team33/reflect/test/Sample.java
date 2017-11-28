@@ -24,11 +24,11 @@ public class Sample {
     private String aPrivateField;
 
     public Sample() {
-        aPublicFinalField = new String("Sample.aPublicFinalField");
+        aPublicFinalField = "Sample.aPublicFinalField";
         aPublicFinalTransientField = "Sample.aPublicFinalTransientField";
-        aProtectedFinalField = new String("Sample.aProtectedFinalField");
-        aPackageFinalField = new String("Sample.aPackageFinalField");
-        aPrivateFinalField = new String("Sample.aPrivateFinalField");
+        aProtectedFinalField = "Sample.aProtectedFinalField";
+        aPackageFinalField = "Sample.aPackageFinalField";
+        aPrivateFinalField = "Sample.aPrivateFinalField";
         aPublicField = "Sample.aPublicField";
         aPublicTransientField = "Sample.aPublicTransientField";
         aProtectedField = "Sample.aProtectedField";
@@ -149,7 +149,7 @@ public class Sample {
     @SuppressWarnings("DesignForExtension")
     @Override
     public boolean equals(final Object obj) {
-        return (this == obj) || ((Sample.class == obj.getClass()) && toList(this).equals(toList((Sample) obj)));
+        return this == obj || Sample.class == obj.getClass() && toList(this).equals(toList((Sample) obj));
     }
 
     @SuppressWarnings("DesignForExtension")

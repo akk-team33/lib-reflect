@@ -9,19 +9,46 @@ import java.util.List;
         "FieldNameHidesFieldInSuperclass"})
 public class SampleEx extends Sample {
 
-    public static final String aPublicStaticFinalField = "aPublicStaticFinalField";
-    private static String aPrivateStaticField = "aPrivateStaticField";
+    public static final String aPublicStaticFinalField = "SampleEx.aPublicStaticFinalField";
+    private static String aPrivateStaticField = "SampleEx.aPrivateStaticField";
 
-    public final String aPublicFinalField = "Sample.aPublicFinalField";
-    public final transient String aPublicFinalTransientField = "Sample.aPublicFinalTransientField";
-    protected final String aProtectedFinalField = "Sample.aProtectedFinalField";
-    final String aPackageFinalField = "Sample.aPackageFinalField";
-    private final String aPrivateFinalField = "Sample.aPrivateFinalField";
-    public String aPublicField = "Sample.aPublicField";
-    public transient String aPublicTransientField = "Sample.aPublicTransientField";
-    protected String aProtectedField = "Sample.aProtectedField";
-    String aPackageField = "Sample.aPackageField";
-    private String aPrivateField = "Sample.aPrivateField";
+    public final String aPublicFinalField;
+    public final transient String aPublicFinalTransientField;
+    protected final String aProtectedFinalField;
+    final String aPackageFinalField;
+    private final String aPrivateFinalField;
+    public String aPublicField;
+    public transient String aPublicTransientField;
+    protected String aProtectedField;
+    String aPackageField;
+    private String aPrivateField;
+
+    public SampleEx() {
+        aPublicFinalField = "SampleEx.aPublicFinalField";
+        aPublicFinalTransientField = "SampleEx.aPublicFinalTransientField";
+        aProtectedFinalField = "SampleEx.aProtectedFinalField";
+        aPackageFinalField = "SampleEx.aPackageFinalField";
+        aPrivateFinalField = "SampleEx.aPrivateFinalField";
+        aPublicField = "SampleEx.aPublicField";
+        aPublicTransientField = "SampleEx.aPublicTransientField";
+        aProtectedField = "SampleEx.aProtectedField";
+        aPackageField = "SampleEx.aPackageField";
+        aPrivateField = "SampleEx.aPrivateField";
+    }
+
+    public SampleEx(final Randomizer rnd) {
+        super(rnd);
+        aPublicFinalField = rnd.nextString();
+        aPublicFinalTransientField = rnd.nextString();
+        aProtectedFinalField = rnd.nextString();
+        aPackageFinalField = rnd.nextString();
+        aPrivateFinalField = rnd.nextString();
+        aPublicField = rnd.nextString();
+        aPublicTransientField = rnd.nextString();
+        aProtectedField = rnd.nextString();
+        aPackageField = rnd.nextString();
+        aPrivateField = rnd.nextString();
+    }
 
     @SuppressWarnings("TypeMayBeWeakened")
     public static List<?> toList(final SampleEx subject) {

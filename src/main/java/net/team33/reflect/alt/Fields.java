@@ -38,7 +38,7 @@ public final class Fields<T> {
         };
     }
 
-    public final Mapper map(final Map<String, Object> map) {
+    public final Mapper map(final Map<?, ?> map) {
         return new Mapper(map);
     }
 
@@ -47,8 +47,8 @@ public final class Fields<T> {
 
         private final Class<T> subjectClass;
 
-        private Function<Class<?>, Stream<Field>> fields = FieldStream.FLAT;
-        private Function<Field, String> toKey = FieldName.SIMPLE;
+        private Function<Class<?>, Stream<Field>> toFieldStream = FieldStream.FLAT;
+        private Function<Field, String> toFieldName = FieldName.SIMPLE;
         private Predicate<? super Field> filter = FieldFilter.SIGNIFICANT;
 
         private Builder(final Class<T> subjectClass) {
@@ -56,58 +56,61 @@ public final class Fields<T> {
         }
 
         private Stream<Field> stream() {
-            return fields.apply(subjectClass)
+            return toFieldStream.apply(subjectClass)
                     .filter(filter)
                     .peek(field -> field.setAccessible(true));
         }
 
         private void put(final Map<String, Field> map, final Field field) {
-            map.put(toKey.apply(field), field);
+            map.put(toFieldName.apply(field), field);
         }
 
-        public Builder<T> setFields(final Function<Class<?>, Stream<Field>> fields) {
-            this.fields = fields;
-            return this;
-        }
-
-        public Builder<T> setToKey(final Function<Field, String> toKey) {
-            this.toKey = toKey;
-            return this;
-        }
-
-        public Builder<T> setFilter(final Predicate<? super Field> filter) {
+        public final Builder<T> setFilter(final Predicate<? super Field> filter) {
             this.filter = filter;
             return this;
         }
 
-        public Fields<T> build() {
+        public final Builder<T> setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
+            this.toFieldStream = toFieldStream;
+            return this;
+        }
+
+        public final Builder<T> setToFieldName(final Function<Field, String> toFieldName) {
+            this.toFieldName = toFieldName;
+            return this;
+        }
+
+        public final Builder<T> setToFieldNameByClass(final Function<Class<?>, Function<Field, String>> toToFieldName) {
+            return setToFieldName(toToFieldName.apply(subjectClass));
+        }
+
+        public final Fields<T> build() {
             return new Fields<>(this);
         }
     }
 
-    public class Mapper {
+    public final class Mapper {
 
-        private final Map<String, ?> origin;
+        private final Map<?, ?> origin;
 
-        public Mapper(final Map<String, ?> origin) {
-            //noinspection AssignmentToCollectionOrArrayFieldFromParameter
+        private Mapper(final Map<?, ?> origin) {
             this.origin = origin;
         }
 
         public final T to(final T target) {
-            for (final Map.Entry<String, Field> entry : backing.entrySet()) {
-                final String key = entry.getKey();
+            backing.forEach((key, field) -> {
                 try {
-                    entry.getValue().set(target, origin.get(key));
+                    field.set(target, origin.get(key));
                 } catch (final IllegalAccessException caught) {
                     throw new IllegalStateException("cannot set field [" + key + "]", caught);
                 }
-            }
+            });
             return target;
         }
     }
 
     private final class Entries extends AbstractSet<Map.Entry<String, Object>> {
+
         private final T sample;
 
         private Entries(final T sample) {
@@ -115,12 +118,12 @@ public final class Fields<T> {
         }
 
         @Override
-        public java.util.Iterator<Map.Entry<String, Object>> iterator() {
+        public final java.util.Iterator<Map.Entry<String, Object>> iterator() {
             return new Iterator(backing.entrySet().iterator());
         }
 
         @Override
-        public int size() {
+        public final int size() {
             return backing.size();
         }
 
