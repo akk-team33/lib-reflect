@@ -4,12 +4,12 @@ import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.Objects;
 
-public class FieldEntry implements Map.Entry<String, Object> {
+class FieldEntry implements Map.Entry<String, Object> {
 
     private final Object subject;
     private final Map.Entry<String, Field> entry;
 
-    public FieldEntry(final Map.Entry<String, Field> entry, final Object subject) {
+    FieldEntry(final Map.Entry<String, Field> entry, final Object subject) {
         this.entry = entry;
         this.subject = subject;
     }
