@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 public final class FieldName {
 
     /**
-     * Defines a {@link Function} to get the simple name of a {@link Field}.
+     * Defines a {@link Function} to get the {@linkplain Field#getName() simple name} of a {@link Field}.
      */
     public static final Function<Field, String> SIMPLE = Field::getName;
 
