@@ -4,7 +4,7 @@ import java.lang.reflect.Modifier;
 import java.util.function.IntPredicate;
 
 @SuppressWarnings("unused")
-public final class Modifiers {
+final class Modifiers {
 
     public static final IntPredicate TRUE = modifiers -> true;
     public static final IntPredicate FALSE = modifiers -> false;

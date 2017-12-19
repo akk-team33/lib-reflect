@@ -4,6 +4,7 @@ import net.team33.reflect.test.Sample;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -16,16 +17,15 @@ import static org.junit.Assert.assertTrue;
 @SuppressWarnings("JUnit4MethodNamingConvention")
 public class FieldFilterTest {
 
-    private static Set<String> sampleFields() {
-        return sampleFields(FieldStream.FLAT.apply(Sample.class));
+    private static Stream<Field> sampleFields() {
+        return FieldStream.FLAT.apply(Sample.class);
     }
 
-    private static Set<String> sampleFields(final Predicate<Field> filter) {
-        return sampleFields(FieldStream.FLAT.apply(Sample.class)
-                .filter(filter));
+    private static Stream<Field> sampleFields(final Predicate<? super Field> filter) {
+        return FieldStream.FLAT.apply(Sample.class).filter(filter);
     }
 
-    private static Set<String> sampleFields(final Stream<Field> stream) {
+    private static Set<String> sampleFieldNames(final Stream<Field> stream) {
         return stream
                 .map(FieldName.SIMPLE)
                 .collect(HashSet::new, Set::add, Set::addAll);
@@ -33,59 +33,79 @@ public class FieldFilterTest {
 
     @Test
     public final void ANY() {
-        final Set<String> expected = sampleFields();
-        final Set<String> result = sampleFields(FieldFilter.ANY);
+        final Set<String> expected = sampleFieldNames(sampleFields());
+        final Set<String> result = sampleFieldNames(sampleFields(FieldFilter.ANY));
         assertEquals(expected, result);
     }
 
     @Test
     public final void PUBLIC() {
         sampleFields(FieldFilter.PUBLIC)
-                .forEach(name -> assertTrue(name, name.contains("Public")));
+                .forEach(field -> assertTrue(Modifier.isPublic(field.getModifiers())));
+        sampleFields(FieldFilter.PUBLIC.negate())
+                .forEach(field -> assertFalse(Modifier.isPublic(field.getModifiers())));
     }
 
     @Test
     public final void PRIVATE() {
         sampleFields(FieldFilter.PRIVATE)
-                .forEach(name -> assertTrue(name, name.contains("Private")));
+                .forEach(field -> assertTrue(Modifier.isPrivate(field.getModifiers())));
+        sampleFields(FieldFilter.PRIVATE.negate())
+                .forEach(field -> assertFalse(Modifier.isPrivate(field.getModifiers())));
     }
 
     @Test
     public final void PROTECTED() {
         sampleFields(FieldFilter.PROTECTED)
-                .forEach(name -> assertTrue(name, name.contains("Protected")));
+                .forEach(field -> assertTrue(Modifier.isProtected(field.getModifiers())));
+        sampleFields(FieldFilter.PROTECTED.negate())
+                .forEach(field -> assertFalse(Modifier.isProtected(field.getModifiers())));
     }
 
     @Test
     public final void STATIC() {
         sampleFields(FieldFilter.STATIC)
-                .forEach(name -> assertTrue(name, name.contains("Static")));
+                .forEach(field -> assertTrue(Modifier.isStatic(field.getModifiers())));
+        sampleFields(FieldFilter.STATIC.negate())
+                .forEach(field -> assertFalse(Modifier.isStatic(field.getModifiers())));
     }
 
     @Test
     public final void FINAL() {
         sampleFields(FieldFilter.FINAL)
-                .forEach(name -> assertTrue(name, name.contains("Final")));
+                .forEach(field -> assertTrue(Modifier.isFinal(field.getModifiers())));
+        sampleFields(FieldFilter.FINAL.negate())
+                .forEach(field -> assertFalse(Modifier.isFinal(field.getModifiers())));
     }
 
     @Test
     public final void TRANSIENT() {
         sampleFields(FieldFilter.TRANSIENT)
-                .forEach(name -> assertTrue(name, name.contains("Transient")));
+                .forEach(field -> assertTrue(Modifier.isTransient(field.getModifiers())));
+        sampleFields(FieldFilter.TRANSIENT.negate())
+                .forEach(field -> assertFalse(Modifier.isTransient(field.getModifiers())));
     }
 
     @Test
     public final void INSTANCE() {
         sampleFields(FieldFilter.INSTANCE)
-                .forEach(name -> assertFalse(name, name.contains("Static")));
+                .forEach(field -> assertFalse(Modifier.isStatic(field.getModifiers())));
+        sampleFields(FieldFilter.INSTANCE.negate())
+                .forEach(field -> assertTrue(Modifier.isStatic(field.getModifiers())));
     }
 
     @Test
     public final void SIGNIFICANT() {
         sampleFields(FieldFilter.SIGNIFICANT)
-                .forEach(name -> {
-                    assertFalse(name, name.contains("Static"));
-                    assertFalse(name, name.contains("Transient"));
+                .forEach(field -> {
+                    final int modifiers = field.getModifiers();
+                    assertFalse(Modifier.isStatic(modifiers));
+                    assertFalse(Modifier.isTransient(modifiers));
+                });
+        sampleFields(FieldFilter.SIGNIFICANT.negate())
+                .forEach(field -> {
+                    final int modifiers = field.getModifiers();
+                    assertTrue(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
                 });
     }
 }
