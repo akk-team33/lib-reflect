@@ -1,5 +1,7 @@
 package net.team33.reflect;
 
+import de.team33.libs.reflect.v3.FieldStream;
+
 import java.lang.reflect.Field;
 import java.util.AbstractMap;
 import java.util.AbstractSet;

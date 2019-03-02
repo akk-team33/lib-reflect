@@ -1,4 +1,4 @@
-package net.team33.reflect;
+package de.team33.libs.reflect.v3;
 
 import java.lang.reflect.Field;
 import java.util.function.Function;

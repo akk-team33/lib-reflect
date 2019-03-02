@@ -1,5 +1,6 @@
-package net.team33.reflect;
+package de.team33.test.reflect.v3;
 
+import de.team33.libs.reflect.v3.FieldStream;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
 import org.junit.Assert;

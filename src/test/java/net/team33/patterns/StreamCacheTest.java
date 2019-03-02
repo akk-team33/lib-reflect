@@ -1,7 +1,7 @@
 package net.team33.patterns;
 
 import net.team33.reflect.FieldFilter;
-import net.team33.reflect.FieldStream;
+import de.team33.libs.reflect.v3.FieldStream;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
 import org.junit.Assert;
