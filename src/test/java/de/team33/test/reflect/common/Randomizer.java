@@ -1,4 +1,4 @@
-package net.team33.reflect.test;
+package de.team33.test.reflect.common;
 
 import java.util.Random;
 

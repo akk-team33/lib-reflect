@@ -1,9 +1,9 @@
 package net.team33.reflect;
 
 import de.team33.libs.reflect.v3.Fields;
-import net.team33.reflect.test.Randomizer;
-import net.team33.reflect.test.Sample;
-import net.team33.reflect.test.SampleEx;
+import de.team33.test.reflect.common.Randomizer;
+import de.team33.test.reflect.common.Sample;
+import de.team33.test.reflect.common.SampleEx;
 import org.junit.Assert;
 import org.junit.Test;
 

@@ -1,8 +1,8 @@
 package de.team33.test.reflect.v3;
 
 import de.team33.libs.reflect.v3.Fields;
-import net.team33.reflect.test.Sample;
-import net.team33.reflect.test.SampleEx;
+import de.team33.test.reflect.common.Sample;
+import de.team33.test.reflect.common.SampleEx;
 import org.junit.Assert;
 import org.junit.Test;
 

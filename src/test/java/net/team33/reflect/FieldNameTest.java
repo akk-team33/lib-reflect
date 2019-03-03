@@ -1,8 +1,8 @@
 package net.team33.reflect;
 
 import de.team33.libs.reflect.v3.Fields;
-import net.team33.reflect.test.Sample;
-import net.team33.reflect.test.SampleEx;
+import de.team33.test.reflect.common.Sample;
+import de.team33.test.reflect.common.SampleEx;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -20,15 +20,15 @@ public class FieldNameTest {
     public final void qualified() {
         Fields.FLAT.apply(Sample.class).forEach(field -> {
             Assert.assertEquals(
-                    "net.team33.reflect.test.Sample." + field.getName(),
+                    "de.team33.test.reflect.common.Sample." + field.getName(),
                     FieldName.QUALIFIED.apply(field)
             );
             Assert.assertEquals(
-                    "net.team33.reflect.test.Sample." + field.getName(),
+                    "de.team33.test.reflect.common.Sample." + field.getName(),
                     FieldName.QUALIFIED.apply(field)
             );
             Assert.assertEquals(
-                    "net.team33.reflect.test.Sample." + field.getName(),
+                    "de.team33.test.reflect.common.Sample." + field.getName(),
                     FieldName.QUALIFIED.apply(field)
             );
         });
