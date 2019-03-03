@@ -7,13 +7,13 @@ import net.team33.reflect.test.SampleEx;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class FieldsTest {
+public class FieldMapperTest {
 
     private final Randomizer randomizer = new Randomizer();
 
     @Test
     public final void sample() {
-        final Fields<Sample> mapper = Fields.of(Sample.class).build();
+        final FieldMapper<Sample> mapper = FieldMapper.of(Sample.class).build();
         final Sample origin = new Sample(randomizer);
         final Sample target = new Sample();
         final Sample result = mapper.map(mapper.map(origin)).to(target);
@@ -24,7 +24,7 @@ public class FieldsTest {
 
     @Test
     public final void sampleEx() {
-        final Fields<SampleEx> mapperEx = Fields.of(SampleEx.class)
+        final FieldMapper<SampleEx> mapperEx = FieldMapper.of(SampleEx.class)
                 .setToFieldStream(FieldStream.DEEP)
                 .setToFieldNameByClass(FieldName.PREFIXED)
                 .build();

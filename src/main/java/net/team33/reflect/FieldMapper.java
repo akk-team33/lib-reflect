@@ -13,11 +13,11 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public final class Fields<T> {
+public final class FieldMapper<T> {
 
     private final Map<String, Field> backing;
 
-    private Fields(final Builder<T> builder) {
+    private FieldMapper(final Builder<T> builder) {
         this.backing = Collections.unmodifiableMap(builder.stream()
                 .collect(TreeMap::new, builder::put, Map::putAll));
     }
@@ -82,8 +82,8 @@ public final class Fields<T> {
             return setToFieldName(toToFieldName.apply(subjectClass));
         }
 
-        public final Fields<T> build() {
-            return new Fields<>(this);
+        public final FieldMapper<T> build() {
+            return new FieldMapper<>(this);
         }
     }
 
