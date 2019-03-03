@@ -1,6 +1,6 @@
 package net.team33.reflect;
 
-import de.team33.libs.reflect.v3.FieldStream;
+import de.team33.libs.reflect.v3.Fields;
 
 import java.lang.reflect.Field;
 import java.util.AbstractMap;
@@ -45,7 +45,7 @@ public final class FieldMapper<T> {
 
         private final Class<T> subjectClass;
 
-        private Function<Class<?>, Stream<Field>> toFieldStream = FieldStream.FLAT;
+        private Function<Class<?>, Stream<Field>> toFieldStream = Fields.FLAT;
         private Function<Field, String> toFieldName = FieldName.SIMPLE;
         private Predicate<? super Field> filter = FieldFilter.SIGNIFICANT;
 

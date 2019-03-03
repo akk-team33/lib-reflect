@@ -7,7 +7,7 @@ import java.util.stream.Stream;
 /**
  * Provides {@link Function methods} to get a {@link Stream} of {@link Field Fields} from a given {@link Class}.
  */
-public enum FieldStream implements Function<Class<?>, Stream<Field>> {
+public enum Fields implements Function<Class<?>, Stream<Field>> {
 
     /**
      * Delivers all {@link Field}s straightly declared by a given {@link Class}

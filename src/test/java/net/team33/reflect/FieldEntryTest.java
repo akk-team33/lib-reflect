@@ -1,6 +1,6 @@
 package net.team33.reflect;
 
-import de.team33.libs.reflect.v3.FieldStream;
+import de.team33.libs.reflect.v3.Fields;
 import net.team33.reflect.test.Sample;
 import org.junit.Assert;
 import org.junit.Test;
@@ -15,7 +15,7 @@ public class FieldEntryTest {
     private final Sample sample = new Sample();
 
     private static Map<String, Field> fieldMap() {
-        return FieldStream.FLAT.apply(Sample.class)
+        return Fields.FLAT.apply(Sample.class)
                 .peek(field -> field.setAccessible(true))
                 .collect(TreeMap::new, (map, field) -> map.put(field.getName(), field), Map::putAll);
     }

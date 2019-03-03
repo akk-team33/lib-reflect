@@ -1,6 +1,6 @@
 package net.team33.reflect;
 
-import de.team33.libs.reflect.v3.FieldStream;
+import de.team33.libs.reflect.v3.Fields;
 import net.team33.reflect.test.Randomizer;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
@@ -25,7 +25,7 @@ public class FieldMapperTest {
     @Test
     public final void sampleEx() {
         final FieldMapper<SampleEx> mapperEx = FieldMapper.of(SampleEx.class)
-                .setToFieldStream(FieldStream.DEEP)
+                .setToFieldStream(Fields.DEEP)
                 .setToFieldNameByClass(FieldName.PREFIXED)
                 .build();
         final SampleEx origin = new SampleEx(randomizer);

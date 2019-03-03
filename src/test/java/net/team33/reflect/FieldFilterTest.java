@@ -1,6 +1,6 @@
 package net.team33.reflect;
 
-import de.team33.libs.reflect.v3.FieldStream;
+import de.team33.libs.reflect.v3.Fields;
 import net.team33.reflect.test.Sample;
 import org.junit.Test;
 
@@ -19,11 +19,11 @@ import static org.junit.Assert.assertTrue;
 public class FieldFilterTest {
 
     private static Stream<Field> sampleFields() {
-        return FieldStream.FLAT.apply(Sample.class);
+        return Fields.FLAT.apply(Sample.class);
     }
 
     private static Stream<Field> sampleFields(final Predicate<? super Field> filter) {
-        return FieldStream.FLAT.apply(Sample.class).filter(filter);
+        return Fields.FLAT.apply(Sample.class).filter(filter);
     }
 
     private static Set<String> sampleFieldNames(final Stream<Field> stream) {

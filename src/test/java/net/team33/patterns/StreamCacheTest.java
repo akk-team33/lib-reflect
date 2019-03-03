@@ -1,7 +1,7 @@
 package net.team33.patterns;
 
 import net.team33.reflect.FieldFilter;
-import de.team33.libs.reflect.v3.FieldStream;
+import de.team33.libs.reflect.v3.Fields;
 import net.team33.reflect.test.Sample;
 import net.team33.reflect.test.SampleEx;
 import org.junit.Assert;
@@ -15,22 +15,22 @@ public class StreamCacheTest {
 
     @Test
     public final void from() {
-        final StreamCache<Class<?>, Field> subject = StreamCache.builder(FieldStream.FLAT)
+        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields.FLAT)
                 .build();
         Assert.assertEquals(
-                FieldStream.FLAT.apply(Sample.class).collect(Collectors.toSet()),
+                Fields.FLAT.apply(Sample.class).collect(Collectors.toSet()),
                 subject.from(Sample.class).collect(Collectors.toSet())
         );
     }
 
     @Test
     public final void fromWithFilter() {
-        final StreamCache<Class<?>, Field> subject = StreamCache.builder(FieldStream.DEEP)
+        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields.DEEP)
                 .addFilter(FieldFilter.INSTANCE)
                 .addFilter(FieldFilter.TRANSIENT.negate())
                 .addFilter(FieldFilter.PUBLIC)
                 .build();
-        final Set<Field> expected = FieldStream.DEEP.apply(SampleEx.class)
+        final Set<Field> expected = Fields.DEEP.apply(SampleEx.class)
                 .filter(FieldFilter.INSTANCE)
                 .filter(FieldFilter.TRANSIENT.negate())
                 .filter(FieldFilter.PUBLIC)
