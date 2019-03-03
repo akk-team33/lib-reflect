@@ -12,22 +12,31 @@ public enum Fields implements Function<Class<?>, Stream<Field>> {
     /**
      * Delivers all {@link Field}s straightly declared by a given {@link Class}
      */
-    FLAT {
-        @Override
-        public Stream<Field> apply(final Class<?> subject) {
-            return Stream.of(subject.getDeclaredFields());
-        }
-    },
+    FLAT(Fields::flat),
 
     /**
      * Delivers all {@link Field}s declared by a given {@link Class} or any of its superclasses.
      */
-    DEEP {
-        @Override
-        public Stream<Field> apply(final Class<?> subject) {
-            return (null == subject)
-                    ? Stream.empty()
-                    : Stream.concat(apply(subject.getSuperclass()), Stream.of(subject.getDeclaredFields()));
-        }
+    DEEP(Fields::deep);
+
+    private static Stream<Field> deep(final Class<?> aClass) {
+        return (null == aClass)
+                ? Stream.empty()
+                : Stream.concat(deep(aClass.getSuperclass()), flat(aClass));
+    }
+
+    private static Stream<Field> flat(final Class<?> aClass) {
+        return Stream.of(aClass.getDeclaredFields());
+    }
+
+    private final Function<Class<?>, Stream<Field>> backing;
+
+    Fields(final Function<Class<?>, Stream<Field>> backing) {
+        this.backing = backing;
+    }
+
+    @Override
+    public final Stream<Field> apply(final Class<?> subject) {
+        return backing.apply(subject);
     }
 }
