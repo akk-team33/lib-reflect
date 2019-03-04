@@ -1,5 +1,6 @@
 package de.team33.libs.reflect.v3;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 
@@ -8,6 +9,30 @@ import java.util.stream.Stream;
  */
 public class Classes
 {
+
+  private static final int MAX_DISTANCE = Short.MAX_VALUE;
+
+  public static int distance(final Class<?> subClass, final Class<?> superClass)
+  {
+    if (subClass == superClass)
+      return 0;
+    if (superClass.isAssignableFrom(subClass))
+      return 1 + distance(superClasses(subClass), superClass);
+    else
+      return MAX_DISTANCE;
+  }
+
+  private static Stream<Class<?>> superClasses(final Class<?> subClass)
+  {
+    return (null == subClass) ? Stream.empty() :
+      Stream.concat(Stream.of(subClass.getInterfaces()), flat(subClass.getSuperclass()));
+  }
+
+  private static int distance(final Stream<Class<?>> subClasses, final Class<?> superClass)
+  {
+    return subClasses.map(subClass -> distance(subClass, superClass))
+                     .reduce(MAX_DISTANCE, Math::min);
+  }
 
   /**
    * Streams a 'flat' class hierarchy (that focuses only on the specified class).

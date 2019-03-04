@@ -6,7 +6,11 @@ import static java.util.Collections.singletonList;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,6 +20,17 @@ import org.junit.Test;
 
 public class ClassesTest
 {
+
+  @Test
+  public void distance()
+  {
+    assertEquals(0, Classes.distance(Inner.class, Inner.class));
+    assertEquals(1, Classes.distance(Inner.class, Super.class));
+    assertEquals(2, Classes.distance(Inner.class, Object.class));
+    assertEquals(1, Classes.distance(Inner.class, ISuper1.class));
+    assertEquals(1, Classes.distance(Inner.class, ISuper2.class));
+    assertEquals(-2, Classes.distance(Collection.class, Map.class));
+  }
 
   @Test
   public void empty()
