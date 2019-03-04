@@ -8,28 +8,37 @@ import java.util.stream.Stream;
  */
 public class Classes {
 
-    private static final int MAX_DISTANCE = Short.MAX_VALUE;
+    private static final Distance DEEP = Classes::deepDistance;
+    private static final Distance WIDE = Classes::wideDistance;
 
     public static int distance(final Class<?> subClass, final Class<?> superClass) {
-        if (subClass == superClass) {
-            return 0;
-        } else if (Object.class == superClass) {
-            return 1 + distance(subClass.getSuperclass(), superClass);
-        } else {
-            return 1 + distance(superClasses(subClass), superClass);
-        }
+        return (Object.class == superClass)
+                ? distance(subClass, superClass, DEEP)
+                : distance(subClass, superClass, WIDE);
     }
 
-    private static Stream<Class<?>> superClasses(final Class<?> subClass) {
-        return Stream.concat(Stream.of(subClass.getInterfaces()), flat(subClass.getSuperclass()));
+    private static int deepDistance(final Class<?> subClass, final Class<?> superClass) {
+        return distance(subClass.getSuperclass(), superClass, DEEP);
+    }
+
+    private static int wideDistance(final Class<?> subClass, final Class<?> superClass) {
+        return distance(superClasses(subClass), superClass);
+    }
+
+    private static int distance(final Class<?> subClass, final Class<?> superClass, final Distance sub) {
+        return (subClass == superClass) ? 0 : (1 + sub.distance(subClass, superClass));
     }
 
     private static int distance(final Stream<Class<?>> subClasses, final Class<?> superClass) {
         return subClasses
                 .filter(superClass::isAssignableFrom)
-                .map(subClass -> distance(subClass, superClass))
+                .map(subClass -> distance(subClass, superClass, WIDE))
                 .reduce(Math::min)
                 .orElseThrow(() -> new IllegalStateException());
+    }
+
+    private static Stream<Class<?>> superClasses(final Class<?> subClass) {
+        return Stream.concat(Stream.of(subClass.getInterfaces()), flat(subClass.getSuperclass()));
     }
 
     /**
@@ -67,5 +76,9 @@ public class Classes {
 
     private static Stream<Class<?>> broad(final Class<?>[] subjects) {
         return Stream.of(subjects).map(Classes::broad).reduce(Stream::concat).orElseGet(Stream::empty);
+    }
+
+    private interface Distance {
+        int distance(Class<?> subClass, Class<?> superClass);
     }
 }
