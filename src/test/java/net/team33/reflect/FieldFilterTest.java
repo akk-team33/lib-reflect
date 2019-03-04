@@ -19,11 +19,11 @@ import static org.junit.Assert.assertTrue;
 public class FieldFilterTest {
 
     private static Stream<Field> sampleFields() {
-        return Fields.FLAT.apply(Sample.class);
+        return Fields.flat(Sample.class);
     }
 
     private static Stream<Field> sampleFields(final Predicate<? super Field> filter) {
-        return Fields.FLAT.apply(Sample.class).filter(filter);
+        return Fields.flat(Sample.class).filter(filter);
     }
 
     private static Set<String> sampleFieldNames(final Stream<Field> stream) {

@@ -15,22 +15,22 @@ public class StreamCacheTest {
 
     @Test
     public final void from() {
-        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields.FLAT)
+        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields::flat)
                 .build();
         Assert.assertEquals(
-                Fields.FLAT.apply(Sample.class).collect(Collectors.toSet()),
+                Fields.flat(Sample.class).collect(Collectors.toSet()),
                 subject.from(Sample.class).collect(Collectors.toSet())
         );
     }
 
     @Test
     public final void fromWithFilter() {
-        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields.DEEP)
+        final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields::deep)
                 .addFilter(FieldFilter.INSTANCE)
                 .addFilter(FieldFilter.TRANSIENT.negate())
                 .addFilter(FieldFilter.PUBLIC)
                 .build();
-        final Set<Field> expected = Fields.DEEP.apply(SampleEx.class)
+        final Set<Field> expected = Fields.deep(SampleEx.class)
                 .filter(FieldFilter.INSTANCE)
                 .filter(FieldFilter.TRANSIENT.negate())
                 .filter(FieldFilter.PUBLIC)

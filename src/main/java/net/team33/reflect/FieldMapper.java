@@ -45,7 +45,7 @@ public final class FieldMapper<T> {
 
         private final Class<T> subjectClass;
 
-        private Function<Class<?>, Stream<Field>> toFieldStream = Fields.FLAT;
+        private Function<Class<?>, Stream<Field>> toFieldStream = Fields::flat;
         private Function<Field, String> toFieldName = FieldName.SIMPLE;
         private Predicate<? super Field> filter = FieldFilter.SIGNIFICANT;
 

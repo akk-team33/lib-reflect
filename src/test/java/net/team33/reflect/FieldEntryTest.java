@@ -15,7 +15,7 @@ public class FieldEntryTest {
     private final Sample sample = new Sample();
 
     private static Map<String, Field> fieldMap() {
-        return Fields.FLAT.apply(Sample.class)
+        return Fields.flat(Sample.class)
                 .peek(field -> field.setAccessible(true))
                 .collect(TreeMap::new, (map, field) -> map.put(field.getName(), field), Map::putAll);
     }

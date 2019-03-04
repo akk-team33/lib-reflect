@@ -10,7 +10,7 @@ public class FieldNameTest {
 
     @Test
     public final void simple() {
-        Fields.FLAT.apply(Sample.class).forEach(field -> Assert.assertEquals(
+        Fields.flat(Sample.class).forEach(field -> Assert.assertEquals(
                 field.getName(),
                 FieldName.SIMPLE.apply(field)
         ));
@@ -18,7 +18,7 @@ public class FieldNameTest {
 
     @Test
     public final void qualified() {
-        Fields.FLAT.apply(Sample.class).forEach(field -> {
+        Fields.flat(Sample.class).forEach(field -> {
             Assert.assertEquals(
                     "de.team33.test.reflect.common.Sample." + field.getName(),
                     FieldName.QUALIFIED.apply(field)
@@ -36,7 +36,7 @@ public class FieldNameTest {
 
     @Test
     public final void prefixed() {
-        Fields.FLAT.apply(Sample.class).forEach(field -> {
+        Fields.flat(Sample.class).forEach(field -> {
             Assert.assertEquals(
                     field.getName(),
                     FieldName.PREFIXED.apply(Sample.class).apply(field)
