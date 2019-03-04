@@ -12,9 +12,7 @@ public class Classes {
     private static final Distance WIDE = Classes::wideDistance;
 
     public static int distance(final Class<?> subClass, final Class<?> superClass) {
-        return (Object.class == superClass)
-                ? distance(subClass, superClass, DEEP)
-                : distance(subClass, superClass, WIDE);
+        return distance(subClass, superClass, (Object.class == superClass) ? DEEP : WIDE);
     }
 
     private static int deepDistance(final Class<?> subClass, final Class<?> superClass) {
