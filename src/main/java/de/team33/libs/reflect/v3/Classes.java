@@ -13,21 +13,7 @@ public class Classes {
     private static final Function<Class<?>, Stream<Class<?>>> WIDE = Classes::superClasses;
 
     public static int distance(final Class<?> subClass, final Class<?> superClass) {
-        return distance(subClass, superClass, superClass.isInterface() ? WIDE : DEEP);
-    }
-
-    private static int distance(final Class<?> subClass, final Class<?> superClass,
-                                final Function<Class<?>, Stream<Class<?>>> toStream) {
-        return (subClass == superClass) ? 0 : (1 + distance(toStream.apply(subClass), superClass, toStream));
-    }
-
-    private static int distance(final Stream<Class<?>> subClasses, final Class<?> superClass,
-                                final Function<Class<?>, Stream<Class<?>>> toStream) {
-        return subClasses
-                .filter(superClass::isAssignableFrom)
-                .map(subClass -> distance(subClass, superClass, toStream))
-                .reduce(Math::min)
-                .orElseThrow(IllegalStateException::new);
+        return new Distance(superClass, superClass.isInterface() ? WIDE : DEEP).from(subClass);
     }
 
     private static Stream<Class<?>> superClass(final Class<?> subClass) {
