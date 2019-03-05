@@ -1,5 +1,6 @@
 package de.team33.libs.reflect.v3;
 
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 
@@ -8,35 +9,33 @@ import java.util.stream.Stream;
  */
 public class Classes {
 
-    private static final Distance DEEP = Classes::deepDistance;
-    private static final Distance WIDE = Classes::wideDistance;
+    private static final Function<Class<?>, Stream<Class<?>>> DEEP = Classes::superClass;
+    private static final Function<Class<?>, Stream<Class<?>>> WIDE = Classes::superClasses;
 
     public static int distance(final Class<?> subClass, final Class<?> superClass) {
-        return distance(subClass, superClass, (Object.class == superClass) ? DEEP : WIDE);
+        return distance(subClass, superClass, superClass.isInterface() ? WIDE : DEEP);
     }
 
-    private static int deepDistance(final Class<?> subClass, final Class<?> superClass) {
-        return distance(subClass.getSuperclass(), superClass, DEEP);
+    private static int distance(final Class<?> subClass, final Class<?> superClass,
+                                final Function<Class<?>, Stream<Class<?>>> toStream) {
+        return (subClass == superClass) ? 0 : (1 + distance(toStream.apply(subClass), superClass, toStream));
     }
 
-    private static int wideDistance(final Class<?> subClass, final Class<?> superClass) {
-        return distance(superClasses(subClass), superClass);
-    }
-
-    private static int distance(final Class<?> subClass, final Class<?> superClass, final Distance sub) {
-        return (subClass == superClass) ? 0 : (1 + sub.distance(subClass, superClass));
-    }
-
-    private static int distance(final Stream<Class<?>> subClasses, final Class<?> superClass) {
+    private static int distance(final Stream<Class<?>> subClasses, final Class<?> superClass,
+                                final Function<Class<?>, Stream<Class<?>>> toStream) {
         return subClasses
                 .filter(superClass::isAssignableFrom)
-                .map(subClass -> distance(subClass, superClass, WIDE))
+                .map(subClass -> distance(subClass, superClass, toStream))
                 .reduce(Math::min)
-                .orElseThrow(() -> new IllegalStateException());
+                .orElseThrow(IllegalStateException::new);
+    }
+
+    private static Stream<Class<?>> superClass(final Class<?> subClass) {
+        return flat(subClass.getSuperclass());
     }
 
     private static Stream<Class<?>> superClasses(final Class<?> subClass) {
-        return Stream.concat(Stream.of(subClass.getInterfaces()), flat(subClass.getSuperclass()));
+        return Stream.concat(Stream.of(subClass.getInterfaces()), superClass(subClass));
     }
 
     /**
@@ -74,9 +73,5 @@ public class Classes {
 
     private static Stream<Class<?>> broad(final Class<?>[] subjects) {
         return Stream.of(subjects).map(Classes::broad).reduce(Stream::concat).orElseGet(Stream::empty);
-    }
-
-    private interface Distance {
-        int distance(Class<?> subClass, Class<?> superClass);
     }
 }

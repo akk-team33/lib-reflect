@@ -50,9 +50,9 @@ public class ClassesTest {
         fail("Should fail but was " + Classes.distance(null, List.class));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void distanceNullNull() {
-        assertEquals(0, Classes.distance(null, null));
+        fail("Should fail but was " + Classes.distance(null, null));
     }
 
     @Test
