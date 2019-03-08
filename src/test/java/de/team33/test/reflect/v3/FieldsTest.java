@@ -68,6 +68,40 @@ public class FieldsTest
     );
   }
 
+  @Test
+  public void namingSimple()
+  {
+    assertEquals(
+      Arrays.asList(
+        "privateStaticFinalInt",
+        "privateStaticInt",
+        "privateFinalInt",
+        "privateInt",
+        "privateStaticFinalInt",
+        "privateStaticInt",
+        "privateFinalInt",
+        "privateInt"),
+      Fields.deep(Inner.class).map(Fields.Naming.SIMPLE).collect(Collectors.toList())
+    );
+  }
+
+  @Test
+  public void namingFullQualified()
+  {
+    assertEquals(
+      Arrays.asList(
+        "de.team33.test.reflect.v3.FieldsTest.Super.privateStaticFinalInt",
+        "de.team33.test.reflect.v3.FieldsTest.Super.privateStaticInt",
+        "de.team33.test.reflect.v3.FieldsTest.Super.privateFinalInt",
+        "de.team33.test.reflect.v3.FieldsTest.Super.privateInt",
+        "de.team33.test.reflect.v3.FieldsTest.Inner.privateStaticFinalInt",
+        "de.team33.test.reflect.v3.FieldsTest.Inner.privateStaticInt",
+        "de.team33.test.reflect.v3.FieldsTest.Inner.privateFinalInt",
+        "de.team33.test.reflect.v3.FieldsTest.Inner.privateInt"),
+      Fields.deep(Inner.class).map(Fields.Naming.FULL_QUALIFIED).collect(Collectors.toList())
+    );
+  }
+
   private static class Inner extends Super implements ISuper1, ISuper2
   {
 

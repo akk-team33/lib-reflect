@@ -1,6 +1,8 @@
 package de.team33.libs.reflect.v3;
 
 import java.lang.reflect.Field;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -35,11 +37,44 @@ public class Fields
     return fieldsOf(Classes.wide(subject));
   }
 
+  /**
+   * TODO
+   */
+  public static String fullQualifiedName(final Field field)
+  {
+    return field.getDeclaringClass().getCanonicalName() + "." + field.getName();
+  }
+
   private static Stream<Field> fieldsOf(final Stream<Class<?>> classes)
   {
     return classes.map(Class::getDeclaredFields)
                   .map(Stream::of)
                   .reduce(Stream::concat)
                   .orElseGet(Stream::empty);
+  }
+
+  public interface Naming extends Function<Field, String>
+  {
+
+    Naming SIMPLE = Field::getName;
+
+    Naming FULL_QUALIFIED = Fields::fullQualifiedName;
+
+
+    interface Conditional extends Function<Class<?>, Function<Field, String>>
+    {
+
+      Conditional QUALIFIED = context -> field -> {
+        if (context.equals(field.getDeclaringClass()))
+          return field.getName();
+        else
+          return fullQualifiedName(field);
+      };
+
+      Conditional COMPACT = context -> field -> Stream.generate(() -> ".")
+                                                      .limit(Classes.distance(context,
+                                                                              field.getDeclaringClass()))
+                                                      .collect(Collectors.joining("", "", field.getName()));
+    }
   }
 }
