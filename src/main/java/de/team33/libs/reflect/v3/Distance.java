@@ -15,14 +15,23 @@ class Distance {
     }
 
     final int from(final Class<?> subClass) {
-        return (subClass == superClass) ? 0 : (1 + from(superClasses.apply(subClass)));
+        try {
+            return (subClass == superClass) ? 0 : (1 + from(superClasses.apply(subClass)));
+        } catch (InternalException e) {
+            throw new IllegalArgumentException(String.format(
+                    "<%s> is not a derivative of <%s>", subClass.getCanonicalName(), superClass.getCanonicalName()
+            ));
+        }
     }
 
-    private int from(final Stream<Class<?>> subClasses) {
+    private int from(final Stream<Class<?>> subClasses) throws InternalException {
         return subClasses
-            .filter(superClass::isAssignableFrom)
-            .map(this::from)
-            .reduce(Math::min)
-            .orElseThrow(IllegalStateException::new);
+                .filter(superClass::isAssignableFrom)
+                .map(this::from)
+                .reduce(Math::min)
+                .orElseThrow(InternalException::new);
+    }
+
+    private static class InternalException extends Exception {
     }
 }

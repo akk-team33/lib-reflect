@@ -17,7 +17,7 @@ public class Fields
    */
   public static Stream<Field> flat(final Class<?> subject)
   {
-    return fieldsOf(Classes.flat(subject));
+    return fieldsOf(Classes.optional(subject));
   }
 
   /**

@@ -12,12 +12,18 @@ public class Classes {
     private static final Function<Class<?>, Stream<Class<?>>> DEEP = Classes::superClass;
     private static final Function<Class<?>, Stream<Class<?>>> WIDE = Classes::superClasses;
 
-    public static int distance(final Class<?> subClass, final Class<?> superClass) {
-        return new Distance(superClass, superClass.isInterface() ? WIDE : DEEP).from(subClass);
+    /**
+     * Determines the distance of a given class {@code <subject>} from one of its superclasses or interfaces
+     * {@code <superClass>}, where the distance of a class to itself is always 0.
+     *
+     * @throws IllegalArgumentException when {@code <subject>} ist not a derivative of {@code <superClass>}.
+     */
+    public static int distance(final Class<?> subject, final Class<?> superClass) {
+        return new Distance(superClass, superClass.isInterface() ? WIDE : DEEP).from(subject);
     }
 
     private static Stream<Class<?>> superClass(final Class<?> subClass) {
-        return flat(subClass.getSuperclass());
+        return optional(subClass.getSuperclass());
     }
 
     private static Stream<Class<?>> superClasses(final Class<?> subClass) {
@@ -25,14 +31,18 @@ public class Classes {
     }
 
     /**
-     * Streams a 'flat' class hierarchy (that focuses only on the specified class).
+     * Streams a given class that may be {@code null}.
+     * In that case, the result is empty, otherwise it contains exactly the one given class.
      */
-    public static Stream<Class<?>> flat(final Class<?> subject) {
+    public static Stream<Class<?>> optional(final Class<?> subject) {
         return (null == subject) ? Stream.empty() : Stream.of(subject);
     }
 
     /**
-     * Streams a class hierarchy that focuses on the specified class and its superclasses.
+     * Streams a class hierarchy that focuses on a given class and its superclasses but not its superinterfaces.
+     *
+     * @see #optional(Class)
+     * @see #wide(Class)
      */
     public static Stream<Class<?>> deep(final Class<?> subject) {
         return (null == subject) ? Stream.empty() :
@@ -40,7 +50,10 @@ public class Classes {
     }
 
     /**
-     * Streams a class hierarchy that focuses on the specified class, its superclasses and its superinterfaces.
+     * Streams a class hierarchy that focuses on a given class, its superclasses and its superinterfaces.
+     *
+     * @see #optional(Class)
+     * @see #deep(Class)
      */
     public static Stream<Class<?>> wide(final Class<?> subject) {
         return broad(subject).distinct();

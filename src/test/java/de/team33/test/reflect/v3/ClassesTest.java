@@ -57,7 +57,7 @@ public class ClassesTest {
 
     @Test
     public void empty() {
-        Stream.<Function<Class<?>, Stream<Class<?>>>>of(Classes::flat,
+        Stream.<Function<Class<?>, Stream<Class<?>>>>of(Classes::optional,
                 Classes::deep,
                 Classes::wide).forEach(toStream -> assertEquals(
                 emptyList(),
@@ -67,7 +67,7 @@ public class ClassesTest {
     @Test
     public void flat() {
         assertEquals(singletonList("class de.team33.test.reflect.v3.ClassesTest$Inner"),
-                Classes.flat(Inner.class).map(Class::toString).collect(Collectors.toList()));
+                Classes.optional(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
     @Test
