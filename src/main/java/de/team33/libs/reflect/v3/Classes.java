@@ -16,7 +16,8 @@ public class Classes {
      * Determines the distance of a given class {@code <subject>} from one of its superclasses or interfaces
      * {@code <superClass>}, where the distance of a class to itself is always 0.
      *
-     * @throws IllegalArgumentException when {@code <subject>} ist not a derivative of {@code <superClass>}.
+     * @throws IllegalArgumentException if {@code <subject>} ist not a derivative of {@code <superClass>}.
+     * @throws NullPointerException if one of the given Arguments is {@code null}.
      */
     public static int distance(final Class<?> subject, final Class<?> superClass) {
         return new Distance(superClass, superClass.isInterface() ? WIDE : DEEP).from(subject);

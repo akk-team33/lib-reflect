@@ -30,12 +30,12 @@ public class ClassesTest {
         assertEquals(3, Classes.distance(Inner.class, ISuper3.class));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void distanceReverse() {
         fail("Should fail but was " + Classes.distance(Super.class, Inner.class));
     }
 
-    @Test(expected = IllegalStateException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void distanceNonRelated() {
         fail("Should fail but was " + Classes.distance(List.class, StringBuilder.class));
     }
