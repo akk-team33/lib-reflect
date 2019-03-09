@@ -13,6 +13,9 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static de.team33.libs.reflect.v3.Fields.Filter.SIGNIFICANT;
+import static de.team33.libs.reflect.v3.Fields.Naming.SIMPLE;
+
 public final class FieldMapper<T> {
 
     private final Map<String, Field> backing;
@@ -46,8 +49,8 @@ public final class FieldMapper<T> {
         private final Class<T> subjectClass;
 
         private Function<Class<?>, Stream<Field>> toFieldStream = Fields::flat;
-        private Function<Field, String> toFieldName = FieldName.SIMPLE;
-        private Predicate<? super Field> filter = Fields.Filter.SIGNIFICANT;
+        private Function<Field, String> toFieldName = SIMPLE;
+        private Predicate<? super Field> filter = SIGNIFICANT;
 
         private Builder(final Class<T> subjectClass) {
             this.subjectClass = subjectClass;

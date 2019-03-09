@@ -2,7 +2,6 @@ package de.team33.test.reflect.v3;
 
 import de.team33.libs.reflect.v3.Fields;
 import de.team33.test.reflect.common.Sample;
-import net.team33.reflect.FieldName;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -29,7 +28,7 @@ public class FieldsFilterTest {
 
     private static Set<String> sampleFieldNames(final Stream<Field> stream) {
         return stream
-                .map(FieldName.SIMPLE)
+                .map(Fields.Naming.SIMPLE)
                 .collect(HashSet::new, Set::add, Set::addAll);
     }
 

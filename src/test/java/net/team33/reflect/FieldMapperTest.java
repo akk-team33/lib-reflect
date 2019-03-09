@@ -26,7 +26,7 @@ public class FieldMapperTest {
     public final void sampleEx() {
         final FieldMapper<SampleEx> mapperEx = FieldMapper.of(SampleEx.class)
                 .setToFieldStream(Fields::deep)
-                .setToFieldNameByClass(FieldName.PREFIXED)
+                .setToFieldNameByClass(Fields.Naming.ContextSensitive.COMPACT)
                 .build();
         final SampleEx origin = new SampleEx(randomizer);
         final SampleEx target = new SampleEx();
