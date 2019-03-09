@@ -3,7 +3,7 @@ package de.team33.libs.reflect.v3;
 import java.lang.reflect.Modifier;
 import java.util.function.IntPredicate;
 
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "WeakerAccess"})
 public final class Modifiers {
 
     public interface Predicate extends IntPredicate {

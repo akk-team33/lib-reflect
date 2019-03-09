@@ -1,6 +1,5 @@
 package net.team33.reflect;
 
-import de.team33.libs.reflect.v3.FieldFilter;
 import de.team33.libs.reflect.v3.Fields;
 
 import java.lang.reflect.Field;
@@ -48,7 +47,7 @@ public final class FieldMapper<T> {
 
         private Function<Class<?>, Stream<Field>> toFieldStream = Fields::flat;
         private Function<Field, String> toFieldName = FieldName.SIMPLE;
-        private Predicate<? super Field> filter = FieldFilter.SIGNIFICANT;
+        private Predicate<? super Field> filter = Fields.Filter.SIGNIFICANT;
 
         private Builder(final Class<T> subjectClass) {
             this.subjectClass = subjectClass;

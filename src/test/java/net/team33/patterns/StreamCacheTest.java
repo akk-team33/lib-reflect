@@ -1,6 +1,5 @@
 package net.team33.patterns;
 
-import de.team33.libs.reflect.v3.FieldFilter;
 import de.team33.libs.reflect.v3.Fields;
 import de.team33.test.reflect.common.Sample;
 import de.team33.test.reflect.common.SampleEx;
@@ -26,14 +25,14 @@ public class StreamCacheTest {
     @Test
     public final void fromWithFilter() {
         final StreamCache<Class<?>, Field> subject = StreamCache.builder(Fields::deep)
-                .addFilter(FieldFilter.INSTANCE)
-                .addFilter(FieldFilter.TRANSIENT.negate())
-                .addFilter(FieldFilter.PUBLIC)
+                .addFilter(Fields.Filter.INSTANCE)
+                .addFilter(Fields.Filter.TRANSIENT.negate())
+                .addFilter(Fields.Filter.PUBLIC)
                 .build();
         final Set<Field> expected = Fields.deep(SampleEx.class)
-                .filter(FieldFilter.INSTANCE)
-                .filter(FieldFilter.TRANSIENT.negate())
-                .filter(FieldFilter.PUBLIC)
+                .filter(Fields.Filter.INSTANCE)
+                .filter(Fields.Filter.TRANSIENT.negate())
+                .filter(Fields.Filter.PUBLIC)
                 .collect(Collectors.toSet());
         final Set<Field> result = subject.from(SampleEx.class)
                 .collect(Collectors.toSet());

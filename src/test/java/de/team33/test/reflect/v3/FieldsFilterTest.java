@@ -1,6 +1,5 @@
 package de.team33.test.reflect.v3;
 
-import de.team33.libs.reflect.v3.FieldFilter;
 import de.team33.libs.reflect.v3.Fields;
 import de.team33.test.reflect.common.Sample;
 import net.team33.reflect.FieldName;
@@ -18,7 +17,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("JUnit4MethodNamingConvention")
-public class FieldFilterTest {
+public class FieldsFilterTest {
 
     private static Stream<Field> sampleFields() {
         return Fields.flat(Sample.class);
@@ -37,75 +36,75 @@ public class FieldFilterTest {
     @Test
     public final void ANY() {
         final Set<String> expected = sampleFieldNames(sampleFields());
-        final Set<String> result = sampleFieldNames(sampleFields(FieldFilter.ANY));
+        final Set<String> result = sampleFieldNames(sampleFields(Fields.Filter.ANY));
         assertEquals(expected, result);
     }
 
     @Test
     public final void PUBLIC() {
-        sampleFields(FieldFilter.PUBLIC)
+        sampleFields(Fields.Filter.PUBLIC)
                 .forEach(field -> assertTrue(Modifier.isPublic(field.getModifiers())));
-        sampleFields(FieldFilter.PUBLIC.negate())
+        sampleFields(Fields.Filter.PUBLIC.negate())
                 .forEach(field -> assertFalse(Modifier.isPublic(field.getModifiers())));
     }
 
     @Test
     public final void PRIVATE() {
-        sampleFields(FieldFilter.PRIVATE)
+        sampleFields(Fields.Filter.PRIVATE)
                 .forEach(field -> assertTrue(Modifier.isPrivate(field.getModifiers())));
-        sampleFields(FieldFilter.PRIVATE.negate())
+        sampleFields(Fields.Filter.PRIVATE.negate())
                 .forEach(field -> assertFalse(Modifier.isPrivate(field.getModifiers())));
     }
 
     @Test
     public final void PROTECTED() {
-        sampleFields(FieldFilter.PROTECTED)
+        sampleFields(Fields.Filter.PROTECTED)
                 .forEach(field -> assertTrue(Modifier.isProtected(field.getModifiers())));
-        sampleFields(FieldFilter.PROTECTED.negate())
+        sampleFields(Fields.Filter.PROTECTED.negate())
                 .forEach(field -> assertFalse(Modifier.isProtected(field.getModifiers())));
     }
 
     @Test
     public final void STATIC() {
-        sampleFields(FieldFilter.STATIC)
+        sampleFields(Fields.Filter.STATIC)
                 .forEach(field -> assertTrue(Modifier.isStatic(field.getModifiers())));
-        sampleFields(FieldFilter.STATIC.negate())
+        sampleFields(Fields.Filter.STATIC.negate())
                 .forEach(field -> assertFalse(Modifier.isStatic(field.getModifiers())));
     }
 
     @Test
     public final void FINAL() {
-        sampleFields(FieldFilter.FINAL)
+        sampleFields(Fields.Filter.FINAL)
                 .forEach(field -> assertTrue(Modifier.isFinal(field.getModifiers())));
-        sampleFields(FieldFilter.FINAL.negate())
+        sampleFields(Fields.Filter.FINAL.negate())
                 .forEach(field -> assertFalse(Modifier.isFinal(field.getModifiers())));
     }
 
     @Test
     public final void TRANSIENT() {
-        sampleFields(FieldFilter.TRANSIENT)
+        sampleFields(Fields.Filter.TRANSIENT)
                 .forEach(field -> assertTrue(Modifier.isTransient(field.getModifiers())));
-        sampleFields(FieldFilter.TRANSIENT.negate())
+        sampleFields(Fields.Filter.TRANSIENT.negate())
                 .forEach(field -> assertFalse(Modifier.isTransient(field.getModifiers())));
     }
 
     @Test
     public final void INSTANCE() {
-        sampleFields(FieldFilter.INSTANCE)
+        sampleFields(Fields.Filter.INSTANCE)
                 .forEach(field -> assertFalse(Modifier.isStatic(field.getModifiers())));
-        sampleFields(FieldFilter.INSTANCE.negate())
+        sampleFields(Fields.Filter.INSTANCE.negate())
                 .forEach(field -> assertTrue(Modifier.isStatic(field.getModifiers())));
     }
 
     @Test
     public final void SIGNIFICANT() {
-        sampleFields(FieldFilter.SIGNIFICANT)
+        sampleFields(Fields.Filter.SIGNIFICANT)
                 .forEach(field -> {
                     final int modifiers = field.getModifiers();
                     assertFalse(Modifier.isStatic(modifiers));
                     assertFalse(Modifier.isTransient(modifiers));
                 });
-        sampleFields(FieldFilter.SIGNIFICANT.negate())
+        sampleFields(Fields.Filter.SIGNIFICANT.negate())
                 .forEach(field -> {
                     final int modifiers = field.getModifiers();
                     assertTrue(Modifier.isStatic(modifiers) || Modifier.isTransient(modifiers));
