@@ -1,4 +1,6 @@
-package net.team33.reflect;
+package de.team33.libs.reflect.v3;
+
+import de.team33.libs.reflect.v3.Modifiers;
 
 import java.lang.reflect.Field;
 import java.util.function.IntPredicate;
@@ -12,48 +14,48 @@ public enum FieldFilter implements Predicate<Field> {
     /**
      * Defines a filter accepting all fields (including static fields).
      */
-    ANY(Modifiers.TRUE),
+    ANY(Modifiers.Predicate.TRUE),
 
     /**
      * Defines a filter accepting all public fields.
      */
-    PUBLIC(Modifiers.PUBLIC),
+    PUBLIC(Modifiers.Predicate.PUBLIC),
 
     /**
      * Defines a filter accepting all private fields.
      */
-    PRIVATE(Modifiers.PRIVATE),
+    PRIVATE(Modifiers.Predicate.PRIVATE),
 
     /**
      * Defines a filter accepting all protected fields.
      */
-    PROTECTED(Modifiers.PROTECTED),
+    PROTECTED(Modifiers.Predicate.PROTECTED),
 
     /**
      * Defines a filter accepting all static fields.
      */
-    STATIC(Modifiers.STATIC),
+    STATIC(Modifiers.Predicate.STATIC),
 
     /**
      * Defines a filter accepting all final fields.
      */
-    FINAL(Modifiers.FINAL),
+    FINAL(Modifiers.Predicate.FINAL),
 
     /**
      * Defines a filter accepting all transient fields.
      */
-    TRANSIENT(Modifiers.TRANSIENT),
+    TRANSIENT(Modifiers.Predicate.TRANSIENT),
 
     /**
      * Defines a filter accepting all instance-fields (non-static fields).
      */
-    INSTANCE(Modifiers.STATIC.negate()),
+    INSTANCE(Modifiers.Predicate.STATIC.negate()),
 
     /**
      * Defines a filter accepting all but static or transient fields.
      * Those fields should be significant for a type with value semantics.
      */
-    SIGNIFICANT(Modifiers.STATIC.or(Modifiers.TRANSIENT).negate());
+    SIGNIFICANT(Modifiers.Predicate.STATIC.or(Modifiers.Predicate.TRANSIENT).negate());
 
     private final IntPredicate filter;
 

@@ -1,5 +1,6 @@
 package net.team33.reflect;
 
+import de.team33.libs.reflect.v3.FieldFilter;
 import de.team33.libs.reflect.v3.Fields;
 
 import java.lang.reflect.Field;

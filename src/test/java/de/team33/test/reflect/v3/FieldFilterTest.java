@@ -1,7 +1,9 @@
-package net.team33.reflect;
+package de.team33.test.reflect.v3;
 
+import de.team33.libs.reflect.v3.FieldFilter;
 import de.team33.libs.reflect.v3.Fields;
 import de.team33.test.reflect.common.Sample;
+import net.team33.reflect.FieldName;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
