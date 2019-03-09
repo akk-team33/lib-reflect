@@ -47,23 +47,42 @@ public class Fields {
                 .orElseGet(Stream::empty);
     }
 
+    /**
+     * Defines some typical {@link Function}s that serve to find a name for a {@link Field}.
+     */
     public interface Naming extends Function<Field, String> {
 
+        /**
+         * A {@link Function} that simply returns the plain {@linkplain Field#getName() name} of a given {@link Field}.
+         */
         Naming SIMPLE = Field::getName;
 
-        Naming FULL_QUALIFIED = Fields::canonicalName;
+        /**
+         * A {@link Function} that returns a canonical, full qualified name for a given {@link Field}.
+         */
+        Naming CANONICAL = Fields::canonicalName;
 
+        /**
+         * Defines some typical {@link Function}s that serve to find a name for a {@link Field}
+         * that is as unique as possible in the context of a particular class.
+         */
+        interface ContextSensitive extends Function<Class<?>, Function<Field, String>> {
 
-        interface Conditional extends Function<Class<?>, Function<Field, String>> {
+            /**
+             * A {@link Function} that simply returns the plain {@linkplain Field#getName() name} of the given
+             * {@link Field} if inquired in the context of the Field's declaring class. Otherwise it returns a
+             * canonical, full qualified name.
+             */
+            ContextSensitive QUALIFIED = context -> field -> context.equals(field.getDeclaringClass())
+                    ? field.getName()
+                    : canonicalName(field);
 
-            Conditional QUALIFIED = context -> field -> {
-                if (context.equals(field.getDeclaringClass()))
-                    return field.getName();
-                else
-                    return canonicalName(field);
-            };
-
-            Conditional COMPACT = context -> field -> Stream.generate(() -> ".")
+            /**
+             * A {@link Function} that returns the plane {@linkplain Field#getName() name} of the given {@link Field},
+             * preceded by a corresponding number of points (".") depending on the distance of the context to the
+             * declaring class of the field.
+             */
+            ContextSensitive COMPACT = context -> field -> Stream.generate(() -> ".")
                     .limit(Classes.distance(context,
                             field.getDeclaringClass()))
                     .collect(Collectors.joining("", "", field.getName()));
