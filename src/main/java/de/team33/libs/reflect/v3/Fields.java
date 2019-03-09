@@ -34,9 +34,9 @@ public class Fields {
     }
 
     /**
-     * TODO
+     * Determines a canonical, fully qualified name for a given field.
      */
-    public static String fullQualifiedName(final Field field) {
+    public static String canonicalName(final Field field) {
         return field.getDeclaringClass().getCanonicalName() + "." + field.getName();
     }
 
@@ -51,7 +51,7 @@ public class Fields {
 
         Naming SIMPLE = Field::getName;
 
-        Naming FULL_QUALIFIED = Fields::fullQualifiedName;
+        Naming FULL_QUALIFIED = Fields::canonicalName;
 
 
         interface Conditional extends Function<Class<?>, Function<Field, String>> {
@@ -60,7 +60,7 @@ public class Fields {
                 if (context.equals(field.getDeclaringClass()))
                     return field.getName();
                 else
-                    return fullQualifiedName(field);
+                    return canonicalName(field);
             };
 
             Conditional COMPACT = context -> field -> Stream.generate(() -> ".")
