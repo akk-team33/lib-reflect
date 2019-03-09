@@ -1,11 +1,16 @@
 package de.team33.libs.reflect.v3;
 
 import java.lang.reflect.Field;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.stream.Collectors.toMap;
 
 
 /**
@@ -47,6 +52,10 @@ public class Fields {
                 .map(Stream::of)
                 .reduce(Stream::concat)
                 .orElseGet(Stream::empty);
+    }
+
+    public static Mapping mapping() {
+        return new Mapping();
     }
 
     /**
@@ -151,6 +160,64 @@ public class Fields {
                     .limit(Classes.distance(context,
                             field.getDeclaringClass()))
                     .collect(Collectors.joining("", "", field.getName()));
+        }
+    }
+
+    public interface Streaming extends Function<Class<?>, Stream<Field>> {
+
+        Streaming FLAT = Fields::flat;
+
+        Streaming DEEP = Fields::deep;
+
+        Streaming WIDE = Fields::wide;
+
+        Streaming INSTANCE = context -> deep(context).filter(Filter.INSTANCE);
+
+        Streaming SIGNIFICANT = context -> deep(context).filter(Filter.SIGNIFICANT);
+    }
+
+    public static class Mapping {
+
+        private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
+        private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
+
+        private Mapping() {
+        }
+
+        public final Mapping setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
+            this.toFieldStream = toFieldStream;
+            return this;
+        }
+
+        public final Mapping setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
+            this.toNaming = toNaming;
+            return this;
+        }
+
+        public final Mapping setToName(final Function<Field, String> toName) {
+            return setToNaming(ignored -> toName);
+        }
+
+        public final Mapper prepare() {
+            return new Mapper(this);
+        }
+    }
+
+    public static class Mapper {
+
+        private Function<Class<?>, Stream<Field>> toFieldStream;
+        private Function<Class<?>, Function<Field, String>> toNaming;
+
+        private Mapper(final Mapping builder) {
+            toFieldStream = builder.toFieldStream;
+            toNaming = builder.toNaming;
+        }
+
+        public final Map<String, Field> map(final Class<?> subject) {
+            final Function<Field, String> toName = toNaming.apply(subject);
+            return unmodifiableMap(toFieldStream.apply(subject)
+                    .peek(field -> field.setAccessible(true))
+                    .collect(toMap(toName, field -> field, (a, b) -> b, TreeMap::new)));
         }
     }
 }

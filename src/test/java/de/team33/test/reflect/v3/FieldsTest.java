@@ -4,7 +4,11 @@ import de.team33.libs.reflect.v3.Fields;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
@@ -137,6 +141,62 @@ public class FieldsTest {
                 Fields.deep(Sub.class)
                         .map(Fields.Naming.ContextSensitive.COMPACT.apply(Sub.class))
                         .collect(Collectors.toList())
+        );
+    }
+
+    @Test
+    public void mapperDeep() {
+        final Fields.Mapper mapper = Fields.mapping()
+                .setToFieldStream(Fields.Streaming.DEEP)
+                .setToNaming(Fields.Naming.ContextSensitive.COMPACT)
+                .prepare();
+        assertEquals(
+                Arrays.asList(
+                        "..privateFinalInt",
+                        "..privateInt",
+                        "..privateStaticFinalInt",
+                        "..privateStaticInt",
+                        ".privateFinalInt",
+                        ".privateInt",
+                        ".privateStaticFinalInt",
+                        ".privateStaticInt",
+                        "privateFinalInt",
+                        "privateInt",
+                        "privateStaticFinalInt",
+                        "privateStaticInt"),
+                new ArrayList<>(mapper.map(Sub.class).keySet())
+        );
+    }
+
+    @Test
+    public void mapperWide() {
+        final Fields.Mapper mapper = Fields.mapping()
+                .setToFieldStream(Fields.Streaming.WIDE)
+                .setToName(Fields.Naming.CANONICAL)
+                .prepare();
+        assertEquals(
+                Arrays.asList(
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper1.privateFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper1.privateInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper1.privateStaticFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper1.privateStaticInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper2.privateFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper2.privateInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper2.privateStaticFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.ISuper2.privateStaticInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Inner.privateFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Inner.privateInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Inner.privateStaticFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Inner.privateStaticInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Sub.privateFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Sub.privateInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Sub.privateStaticFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Sub.privateStaticInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Super.privateFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Super.privateInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Super.privateStaticFinalInt",
+                        "de.team33.test.reflect.v3.FieldsTest.Super.privateStaticInt"),
+                new ArrayList<>(mapper.map(Sub.class).keySet())
         );
     }
 
