@@ -54,6 +54,9 @@ public class Fields {
                 .orElseGet(Stream::empty);
     }
 
+    /**
+     * Returns a {@linkplain Mapping kind of builder} for Mapper instances
+     */
     public static Mapping mapping() {
         return new Mapping();
     }
@@ -163,19 +166,43 @@ public class Fields {
         }
     }
 
+    /**
+     * Defines some typical {@link Function}s that serve to stream {@link Field}s of a {@link Class}.
+     */
     public interface Streaming extends Function<Class<?>, Stream<Field>> {
 
+        /**
+         * Streams all {@link Field}s straightly declared by a given {@link Class}
+         */
         Streaming FLAT = Fields::flat;
 
+        /**
+         * Streams all {@link Field}s declared by a given {@link Class} or any of its superclasses.
+         */
         Streaming DEEP = Fields::deep;
 
+        /**
+         * Streams all {@link Field}s declared by a given {@link Class}, any of its superclasses or any of
+         * its superinterfaces.
+         */
         Streaming WIDE = Fields::wide;
 
+        /**
+         * Streams all non-static {@link Field}s declared by a given {@link Class} or any of its
+         * superclasses.
+         */
         Streaming INSTANCE = context -> deep(context).filter(Filter.INSTANCE);
 
+        /**
+         * Streams all non-static/non-transient {@link Field}s declared by a given {@link Class} or any of
+         * its superclasses.
+         */
         Streaming SIGNIFICANT = context -> deep(context).filter(Filter.SIGNIFICANT);
     }
 
+    /**
+     * A kind of builder for {@link Mapper} instances.
+     */
     public static class Mapping {
 
         private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
@@ -184,25 +211,41 @@ public class Fields {
         private Mapping() {
         }
 
+        /**
+         * Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.
+         */
         public final Mapping setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
             this.toFieldStream = toFieldStream;
             return this;
         }
 
+        /**
+         * Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.
+         */
         public final Mapping setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
             this.toNaming = toNaming;
             return this;
         }
 
+        /**
+         * Specifies how a name results from a given {@link Field}.
+         */
         public final Mapping setToName(final Function<Field, String> toName) {
             return setToNaming(ignored -> toName);
         }
 
+        /**
+         * Retrieves a new {@link Mapper} that uses the specified methods.
+         */
         public final Mapper prepare() {
             return new Mapper(this);
         }
     }
 
+
+    /**
+     * A tool to create a {@link Map} to {@link Fields} from their logical names.
+     */
     public static class Mapper {
 
         private Function<Class<?>, Stream<Field>> toFieldStream;
@@ -213,6 +256,9 @@ public class Fields {
             toNaming = builder.toNaming;
         }
 
+        /**
+         * Retrieves a {@link Map} to {@link Fields} from their logical names.
+         */
         public final Map<String, Field> map(final Class<?> subject) {
             final Function<Field, String> toName = toNaming.apply(subject);
             return unmodifiableMap(toFieldStream.apply(subject)
