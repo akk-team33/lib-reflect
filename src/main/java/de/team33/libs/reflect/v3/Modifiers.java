@@ -1,11 +1,19 @@
 package de.team33.libs.reflect.v3;
 
+import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;
 import java.util.function.IntPredicate;
 
+
+/**
+ * Utility for dealing with modifiers.
+ */
 @SuppressWarnings({"unused", "WeakerAccess"})
 public final class Modifiers {
 
+    /**
+     * Provides some predefined {@linkplain Predicate}s for {@link Member#getModifiers()}.
+     */
     public interface Predicate extends IntPredicate {
 
         Predicate TRUE = modifiers -> true;
