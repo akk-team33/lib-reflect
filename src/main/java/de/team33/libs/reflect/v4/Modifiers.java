@@ -1,4 +1,4 @@
-package de.team33.libs.reflect.v3;
+package de.team33.libs.reflect.v4;
 
 import java.lang.reflect.Member;
 import java.lang.reflect.Modifier;

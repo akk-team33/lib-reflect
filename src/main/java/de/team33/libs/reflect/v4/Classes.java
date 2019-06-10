@@ -1,4 +1,4 @@
-package de.team33.libs.reflect.v3;
+package de.team33.libs.reflect.v4;
 
 import java.util.function.Function;
 import java.util.stream.Stream;

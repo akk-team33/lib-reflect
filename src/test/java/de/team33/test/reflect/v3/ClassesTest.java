@@ -1,6 +1,6 @@
 package de.team33.test.reflect.v3;
 
-import de.team33.libs.reflect.v3.Classes;
+import de.team33.libs.reflect.v4.Classes;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -66,7 +66,7 @@ public class ClassesTest {
 
     @Test
     public void flat() {
-        assertEquals(singletonList("class de.team33.test.reflect.v3.ClassesTest$Inner"),
+        assertEquals(singletonList("class de.team33.test.reflect.v4.ClassesTest$Inner"),
                 Classes.optional(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
@@ -75,22 +75,22 @@ public class ClassesTest {
         assertEquals(
                 Arrays.asList(
                         "class java.lang.Object",
-                        "class de.team33.test.reflect.v3.ClassesTest$Base",
-                        "class de.team33.test.reflect.v3.ClassesTest$Super",
-                        "class de.team33.test.reflect.v3.ClassesTest$Inner"
+                        "class de.team33.test.reflect.v4.ClassesTest$Base",
+                        "class de.team33.test.reflect.v4.ClassesTest$Super",
+                        "class de.team33.test.reflect.v4.ClassesTest$Inner"
                 ),
                 Classes.deep(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
     @Test
     public void wide() {
-        assertEquals(Arrays.asList("interface de.team33.test.reflect.v3.ClassesTest$ISuper1",
-                "interface de.team33.test.reflect.v3.ClassesTest$ISuper2",
-                "interface de.team33.test.reflect.v3.ClassesTest$ISuper3",
+        assertEquals(Arrays.asList("interface de.team33.test.reflect.v4.ClassesTest$ISuper1",
+                "interface de.team33.test.reflect.v4.ClassesTest$ISuper2",
+                "interface de.team33.test.reflect.v4.ClassesTest$ISuper3",
                 "class java.lang.Object",
-                "class de.team33.test.reflect.v3.ClassesTest$Base",
-                "class de.team33.test.reflect.v3.ClassesTest$Super",
-                "class de.team33.test.reflect.v3.ClassesTest$Inner"),
+                "class de.team33.test.reflect.v4.ClassesTest$Base",
+                "class de.team33.test.reflect.v4.ClassesTest$Super",
+                "class de.team33.test.reflect.v4.ClassesTest$Inner"),
                 Classes.wide(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
