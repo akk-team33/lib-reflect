@@ -1,4 +1,4 @@
-package de.team33.test.reflect.v3;
+package de.team33.test.reflect.v4;
 
 import de.team33.libs.reflect.v4.Fields;
 import org.junit.Test;
