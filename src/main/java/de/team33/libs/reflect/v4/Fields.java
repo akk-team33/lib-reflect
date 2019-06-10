@@ -55,10 +55,14 @@ public class Fields {
     }
 
     /**
-     * Returns a {@linkplain Mapping kind of builder} for Mapper instances
+     * <p>Returns a {@link Builder} for mapping instances</p>
+     * <p>A mapping is a {@link Function} that returns a {@link Map Map&lt;String, Field&gt;}
+     * from a given {@link Class}</p>
+     * <p>The key values ({@link String}) of such a {@link Map} are the logical names of the associated
+     * {@link Field}s.</p>
      */
-    public static Mapping mapping() {
-        return new Mapping();
+    public static Builder mapping() {
+        return new Builder();
     }
 
     /**
@@ -203,18 +207,18 @@ public class Fields {
     /**
      * A kind of builder for {@link Mapper} instances.
      */
-    public static class Mapping {
+    public static class Builder {
 
         private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
         private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
 
-        private Mapping() {
+        private Builder() {
         }
 
         /**
          * Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.
          */
-        public final Mapping setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
+        public final Builder setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
             this.toFieldStream = toFieldStream;
             return this;
         }
@@ -222,7 +226,7 @@ public class Fields {
         /**
          * Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.
          */
-        public final Mapping setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
+        public final Builder setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
             this.toNaming = toNaming;
             return this;
         }
@@ -230,14 +234,14 @@ public class Fields {
         /**
          * Specifies how a name results from a given {@link Field}.
          */
-        public final Mapping setToName(final Function<Field, String> toName) {
+        public final Builder setToName(final Function<Field, String> toName) {
             return setToNaming(ignored -> toName);
         }
 
         /**
          * Retrieves a new {@link Mapper} that uses the specified methods.
          */
-        public final Mapper prepare() {
+        public final Mapper build() {
             return new Mapper(this);
         }
     }
@@ -251,7 +255,7 @@ public class Fields {
         private Function<Class<?>, Stream<Field>> toFieldStream;
         private Function<Class<?>, Function<Field, String>> toNaming;
 
-        private Mapper(final Mapping builder) {
+        private Mapper(final Builder builder) {
             toFieldStream = builder.toFieldStream;
             toNaming = builder.toNaming;
         }

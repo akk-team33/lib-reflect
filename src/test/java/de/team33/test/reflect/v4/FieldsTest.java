@@ -146,7 +146,7 @@ public class FieldsTest {
         final Fields.Mapper mapper = Fields.mapping()
                 .setToFieldStream(Fields.Streaming.DEEP)
                 .setToNaming(Fields.Naming.ContextSensitive.COMPACT)
-                .prepare();
+                .build();
         assertEquals(
                 Arrays.asList(
                         "..privateFinalInt",
@@ -170,7 +170,7 @@ public class FieldsTest {
         final Fields.Mapper mapper = Fields.mapping()
                 .setToFieldStream(Fields.Streaming.WIDE)
                 .setToName(Fields.Naming.CANONICAL)
-                .prepare();
+                .build();
         assertEquals(
                 Arrays.asList(
                         "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateFinalInt",
