@@ -232,24 +232,23 @@ public class Fields {
          * Defines a {@link Mapping} that considers the fields declared by the underlying class or one of its
          * superclasses, which are neither static nor transient.
          */
-        Mapping SIGNIFICANT_DEEP = mapping()
-                .setToFieldStream(Streaming.SIGNIFICANT_DEEP)
-                .setToNaming(Naming.ContextSensitive.COMPACT)
-                .build();
+        Mapping SIGNIFICANT_DEEP = mapping().build();
 
         /**
          * A for {@link Mapping} instances.
          */
         class Builder {
 
-            private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
+            private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT_DEEP;
             private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
 
             private Builder() {
             }
 
             /**
-             * Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.
+             * <p>Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.</p>
+             * <p>Default is {@link Streaming#SIGNIFICANT_DEEP}.</p>
+             *
              */
             public final Builder setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
                 this.toFieldStream = toFieldStream;
@@ -257,7 +256,8 @@ public class Fields {
             }
 
             /**
-             * Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.
+             * <p>Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.</p>
+             * <p>Default is {@link Naming.ContextSensitive#COMPACT}.</p>
              */
             public final Builder setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
                 this.toNaming = toNaming;
