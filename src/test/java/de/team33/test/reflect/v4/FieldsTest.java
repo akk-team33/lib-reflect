@@ -143,7 +143,7 @@ public class FieldsTest {
 
     @Test
     public void mapperDeep() {
-        final Fields.Mapper mapper = Fields.mapping()
+        final Fields.Mapping mapper = Fields.mapping()
                 .setToFieldStream(Fields.Streaming.DEEP)
                 .setToNaming(Fields.Naming.ContextSensitive.COMPACT)
                 .build();
@@ -161,13 +161,13 @@ public class FieldsTest {
                         "privateInt",
                         "privateStaticFinalInt",
                         "privateStaticInt"),
-                new ArrayList<>(mapper.map(Sub.class).keySet())
+                new ArrayList<>(mapper.apply(Sub.class).keySet())
         );
     }
 
     @Test
     public void mapperWide() {
-        final Fields.Mapper mapper = Fields.mapping()
+        final Fields.Mapping mapper = Fields.mapping()
                 .setToFieldStream(Fields.Streaming.WIDE)
                 .setToName(Fields.Naming.CANONICAL)
                 .build();
@@ -193,17 +193,17 @@ public class FieldsTest {
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticInt"),
-                new ArrayList<>(mapper.map(Sub.class).keySet())
+                new ArrayList<>(mapper.apply(Sub.class).keySet())
         );
     }
 
     private interface ISuper1 {
 
-        static final int privateStaticFinalInt = 0;
+        int privateStaticFinalInt = 0;
 
-        static int privateStaticInt = 0;
+        int privateStaticInt = 0;
 
-        final int privateFinalInt = 0;
+        int privateFinalInt = 0;
 
         int privateInt = 0;
     }
@@ -211,11 +211,11 @@ public class FieldsTest {
 
     private interface ISuper2 extends ISuper1 {
 
-        static final int privateStaticFinalInt = 0;
+        int privateStaticFinalInt = 0;
 
-        static int privateStaticInt = 0;
+        int privateStaticInt = 0;
 
-        final int privateFinalInt = 0;
+        int privateFinalInt = 0;
 
         int privateInt = 0;
     }

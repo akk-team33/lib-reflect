@@ -55,14 +55,14 @@ public class Fields {
     }
 
     /**
-     * <p>Returns a {@link Builder} for mapping instances</p>
+     * <p>Returns a {@link Mapping.Builder Builder} for {@link Mapping Mapping}s.</p>
      * <p>A mapping is a {@link Function} that returns a {@link Map Map&lt;String, Field&gt;}
      * from a given {@link Class}</p>
      * <p>The key values ({@link String}) of such a {@link Map} are the logical names of the associated
      * {@link Field}s.</p>
      */
-    public static Builder mapping() {
-        return new Builder();
+    public static Mapping.Builder mapping() {
+        return new Mapping.Builder();
     }
 
     /**
@@ -198,64 +198,97 @@ public class Fields {
         Streaming INSTANCE = context -> deep(context).filter(Filter.INSTANCE);
 
         /**
-         * Streams all non-static/non-transient {@link Field}s declared by a given {@link Class} or any of
-         * its superclasses.
+         * Streams all non-static/non-transient {@link Field}s straightly declared by a given {@link Class}.
+         * Those fields should be significant for a simple type with value semantics.
          */
-        Streaming SIGNIFICANT = context -> deep(context).filter(Filter.SIGNIFICANT);
+        Streaming SIGNIFICANT_FLAT = context -> flat(context).filter(Filter.SIGNIFICANT);
+
+        /**
+         * Streams all non-static/non-transient {@link Field}s declared by a given {@link Class} or any of
+         * its superclasses. Those fields should be significant for a type with value semantics.
+         */
+        Streaming SIGNIFICANT_DEEP = context -> deep(context).filter(Filter.SIGNIFICANT);
     }
 
     /**
-     * A kind of builder for {@link Mapper} instances.
+     * <p>A Mapping is a {@link Function} that returns a {@link Map Map&lt;String, Field&gt;}
+     * from a given {@link Class}</p>
+     * <p>The key values ({@link String}) of such a {@link Map} are the logical names of the associated
+     * {@link Field}s.</p>
      */
-    public static class Builder {
-
-        private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
-        private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
-
-        private Builder() {
-        }
+    @FunctionalInterface
+    public interface Mapping extends Function<Class<?>, Map<String, Field>> {
 
         /**
-         * Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.
+         * Defines a {@link Mapping} that only considers the fields straightly declared by the underlying class,
+         * which are neither static nor transient.
          */
-        public final Builder setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
-            this.toFieldStream = toFieldStream;
-            return this;
-        }
+        Mapping SIGNIFICANT_FLAT = mapping()
+                .setToFieldStream(Streaming.SIGNIFICANT_FLAT)
+                .setToName(Naming.SIMPLE)
+                .build();
 
         /**
-         * Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.
+         * Defines a {@link Mapping} that considers the fields declared by the underlying class or one of its
+         * superclasses, which are neither static nor transient.
          */
-        public final Builder setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
-            this.toNaming = toNaming;
-            return this;
-        }
+        Mapping SIGNIFICANT_DEEP = mapping()
+                .setToFieldStream(Streaming.SIGNIFICANT_DEEP)
+                .setToNaming(Naming.ContextSensitive.COMPACT)
+                .build();
 
         /**
-         * Specifies how a name results from a given {@link Field}.
+         * A for {@link Mapping} instances.
          */
-        public final Builder setToName(final Function<Field, String> toName) {
-            return setToNaming(ignored -> toName);
-        }
+        class Builder {
 
-        /**
-         * Retrieves a new {@link Mapper} that uses the specified methods.
-         */
-        public final Mapper build() {
-            return new Mapper(this);
+            private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT;
+            private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
+
+            private Builder() {
+            }
+
+            /**
+             * Specifies how to get a {@link Stream} of {@link Field}s from a given {@link Class}.
+             */
+            public final Builder setToFieldStream(final Function<Class<?>, Stream<Field>> toFieldStream) {
+                this.toFieldStream = toFieldStream;
+                return this;
+            }
+
+            /**
+             * Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.
+             */
+            public final Builder setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
+                this.toNaming = toNaming;
+                return this;
+            }
+
+            /**
+             * Specifies how a name results from a given {@link Field}.
+             */
+            public final Builder setToName(final Function<Field, String> toName) {
+                return setToNaming(ignored -> toName);
+            }
+
+            /**
+             * Retrieves a new {@link Mapping} that uses the specified methods.
+             */
+            public final Mapping build() {
+                return new Mapper(this);
+            }
         }
     }
-
 
     /**
      * A tool to create a {@link Map} to {@link Fields} from their logical names.
      */
-    public static class Mapper {
+    private static class Mapper implements Mapping {
 
         private Function<Class<?>, Stream<Field>> toFieldStream;
         private Function<Class<?>, Function<Field, String>> toNaming;
 
-        private Mapper(final Builder builder) {
+        private Mapper(final Mapping.Builder builder) {
             toFieldStream = builder.toFieldStream;
             toNaming = builder.toNaming;
         }
@@ -263,7 +296,8 @@ public class Fields {
         /**
          * Retrieves a {@link Map} to {@link Fields} from their logical names.
          */
-        public final Map<String, Field> map(final Class<?> subject) {
+        @Override
+        public final Map<String, Field> apply(final Class<?> subject) {
             final Function<Field, String> toName = toNaming.apply(subject);
             return unmodifiableMap(toFieldStream.apply(subject)
                     .peek(field -> field.setAccessible(true))
