@@ -114,7 +114,7 @@ public class FieldsTest {
                         "privateFinalInt",
                         "privateInt"),
                 Fields.deep(Sub.class)
-                        .map(Fields.Naming.ContextSensitive.QUALIFIED.apply(Sub.class))
+                        .map(Fields.Naming.Hierarchical.QUALIFIED.apply(Sub.class))
                         .collect(Collectors.toList())
         );
     }
@@ -136,7 +136,7 @@ public class FieldsTest {
                         "privateFinalInt",
                         "privateInt"),
                 Fields.deep(Sub.class)
-                        .map(Fields.Naming.ContextSensitive.COMPACT.apply(Sub.class))
+                        .map(Fields.Naming.Hierarchical.COMPACT.apply(Sub.class))
                         .collect(Collectors.toList())
         );
     }
@@ -145,7 +145,7 @@ public class FieldsTest {
     public void mapperDeep() {
         final Fields.Mapping mapper = Fields.mapping()
                 .setToFieldStream(Fields.Streaming.DEEP)
-                .setToNaming(Fields.Naming.ContextSensitive.COMPACT)
+                .setToNaming(Fields.Naming.Hierarchical.COMPACT)
                 .build();
         assertEquals(
                 Arrays.asList(
@@ -236,7 +236,7 @@ public class FieldsTest {
         }
     }
 
-    private static class Sub extends Inner implements ISuper1, ISuper2 {
+    static class Sub extends Inner implements ISuper1, ISuper2 {
 
         private static final int privateStaticFinalInt = 0;
 

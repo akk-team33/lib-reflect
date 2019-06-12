@@ -147,14 +147,14 @@ public class Fields {
          * Defines some typical {@link Function}s that serve to find a name for a {@link Field}
          * that is as unique as possible in the context of a particular class.
          */
-        interface ContextSensitive extends Function<Class<?>, Function<Field, String>> {
+        interface Hierarchical extends Function<Class<?>, Function<Field, String>> {
 
             /**
              * A {@link Function} that simply returns the plain {@linkplain Field#getName() name} of the given
              * {@link Field} if inquired in the context of the Field's declaring class. Otherwise it returns a
              * canonical, full qualified name.
              */
-            ContextSensitive QUALIFIED = context -> field -> context.equals(field.getDeclaringClass())
+            Hierarchical QUALIFIED = context -> field -> context.equals(field.getDeclaringClass())
                     ? field.getName()
                     : canonicalName(field);
 
@@ -163,10 +163,10 @@ public class Fields {
              * preceded by a corresponding number of points (".") depending on the distance of the context to the
              * declaring class of the field.
              */
-            ContextSensitive COMPACT = context -> field -> Stream.generate(() -> ".")
-                    .limit(Classes.distance(context,
+            Hierarchical COMPACT = context -> field -> Stream.generate(() -> ".")
+                                                             .limit(Classes.distance(context,
                             field.getDeclaringClass()))
-                    .collect(Collectors.joining("", "", field.getName()));
+                                                             .collect(Collectors.joining("", "", field.getName()));
         }
     }
 
@@ -211,10 +211,10 @@ public class Fields {
     }
 
     /**
-     * <p>A Mapping is a {@link Function} that returns a {@link Map Map&lt;String, Field&gt;}
-     * from a given {@link Class}</p>
-     * <p>The key values ({@link String}) of such a {@link Map} are the logical names of the associated
-     * {@link Field}s.</p>
+     * In this context, a {@link Mapping} is primarily a {@link Function} that can map a given {@link Class}
+     * to a {@link Map}&lt;{@link String}, {@link Field}&gt; whose values represent a subset of the fields
+     * declared by the given {@link Class} or one of its superclasses. The keys are logical field names
+     * that do not necessarily have to match the {@linkplain Field#getName() actual field names}.
      */
     @FunctionalInterface
     public interface Mapping extends Function<Class<?>, Map<String, Field>> {
@@ -240,7 +240,7 @@ public class Fields {
         class Builder {
 
             private Function<Class<?>, Stream<Field>> toFieldStream = Streaming.SIGNIFICANT_DEEP;
-            private Function<Class<?>, Function<Field, String>> toNaming = Naming.ContextSensitive.COMPACT;
+            private Function<Class<?>, Function<Field, String>> toNaming = Naming.Hierarchical.COMPACT;
 
             private Builder() {
             }
@@ -257,7 +257,7 @@ public class Fields {
 
             /**
              * <p>Specifies how a name results from a given {@link Field} in the context of a given {@link Class}.</p>
-             * <p>Default is {@link Naming.ContextSensitive#COMPACT}.</p>
+             * <p>Default is {@link Naming.Hierarchical#COMPACT}.</p>
              */
             public final Builder setToNaming(final Function<Class<?>, Function<Field, String>> toNaming) {
                 this.toNaming = toNaming;
