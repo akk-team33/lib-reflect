@@ -21,7 +21,7 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.flat(Inner.class).map(Field::toString).collect(Collectors.toList())
+                Fields.flatStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
         );
     }
 
@@ -37,7 +37,7 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.deep(Inner.class).map(Field::toString).collect(Collectors.toList())
+                Fields.deepStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
         );
     }
 
@@ -61,7 +61,7 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.wide(Inner.class).map(Field::toString).collect(Collectors.toList())
+                Fields.wideStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
         );
     }
 
@@ -77,7 +77,7 @@ public class FieldsTest {
                         "privateStaticInt",
                         "privateFinalInt",
                         "privateInt"),
-                Fields.deep(Inner.class).map(Fields.Naming.SIMPLE).collect(Collectors.toList())
+                Fields.deepStreamOf(Inner.class).map(Fields.Naming.SIMPLE).collect(Collectors.toList())
         );
     }
 
@@ -93,7 +93,7 @@ public class FieldsTest {
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateInt"),
-                Fields.deep(Inner.class).map(Fields.Naming.CANONICAL).collect(Collectors.toList())
+                Fields.deepStreamOf(Inner.class).map(Fields.Naming.CANONICAL).collect(Collectors.toList())
         );
     }
 
@@ -113,8 +113,8 @@ public class FieldsTest {
                         "privateStaticInt",
                         "privateFinalInt",
                         "privateInt"),
-                Fields.deep(Sub.class)
-                        .map(Fields.Naming.Hierarchical.QUALIFIED.apply(Sub.class))
+                Fields.deepStreamOf(Sub.class)
+                        .map(Fields.Naming.qualified(Sub.class))
                         .collect(Collectors.toList())
         );
     }
@@ -135,65 +135,9 @@ public class FieldsTest {
                         "privateStaticInt",
                         "privateFinalInt",
                         "privateInt"),
-                Fields.deep(Sub.class)
-                        .map(Fields.Naming.Hierarchical.COMPACT.apply(Sub.class))
+                Fields.deepStreamOf(Sub.class)
+                        .map(Fields.Naming.compact(Sub.class))
                         .collect(Collectors.toList())
-        );
-    }
-
-    @Test
-    public void mapperDeep() {
-        final Fields.Mapping mapper = Fields.mapping()
-                .setToFieldStream(Fields.Streaming.DEEP)
-                .setToNaming(Fields.Naming.Hierarchical.COMPACT)
-                .build();
-        assertEquals(
-                Arrays.asList(
-                        "..privateFinalInt",
-                        "..privateInt",
-                        "..privateStaticFinalInt",
-                        "..privateStaticInt",
-                        ".privateFinalInt",
-                        ".privateInt",
-                        ".privateStaticFinalInt",
-                        ".privateStaticInt",
-                        "privateFinalInt",
-                        "privateInt",
-                        "privateStaticFinalInt",
-                        "privateStaticInt"),
-                new ArrayList<>(mapper.apply(Sub.class).keySet())
-        );
-    }
-
-    @Test
-    public void mapperWide() {
-        final Fields.Mapping mapper = Fields.mapping()
-                .setToFieldStream(Fields.Streaming.WIDE)
-                .setToName(Fields.Naming.CANONICAL)
-                .build();
-        assertEquals(
-                Arrays.asList(
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateStaticFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateStaticInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper2.privateFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper2.privateInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper2.privateStaticFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.ISuper2.privateStaticInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Inner.privateFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Inner.privateInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Sub.privateFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Sub.privateInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Sub.privateStaticFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Sub.privateStaticInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Super.privateFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Super.privateInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticFinalInt",
-                        "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticInt"),
-                new ArrayList<>(mapper.apply(Sub.class).keySet())
         );
     }
 

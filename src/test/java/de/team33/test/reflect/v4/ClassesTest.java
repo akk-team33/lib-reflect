@@ -57,9 +57,9 @@ public class ClassesTest {
 
     @Test
     public void empty() {
-        Stream.<Function<Class<?>, Stream<Class<?>>>>of(Classes::optional,
-                Classes::deep,
-                Classes::wide).forEach(toStream -> assertEquals(
+        Stream.<Function<Class<?>, Stream<Class<?>>>>of(Classes::streamOf,
+                Classes::deepStreamOf,
+                Classes::wideStreamOf).forEach(toStream -> assertEquals(
                 emptyList(),
                 toStream.apply(null).map(Class::toString).collect(Collectors.toList())));
     }
@@ -67,7 +67,7 @@ public class ClassesTest {
     @Test
     public void flat() {
         assertEquals(singletonList("class de.team33.test.reflect.v4.ClassesTest$Inner"),
-                Classes.optional(Inner.class).map(Class::toString).collect(Collectors.toList()));
+                Classes.streamOf(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
     @Test
@@ -79,7 +79,7 @@ public class ClassesTest {
                         "class de.team33.test.reflect.v4.ClassesTest$Super",
                         "class de.team33.test.reflect.v4.ClassesTest$Inner"
                 ),
-                Classes.deep(Inner.class).map(Class::toString).collect(Collectors.toList()));
+                Classes.deepStreamOf(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
     @Test
@@ -91,7 +91,7 @@ public class ClassesTest {
                 "class de.team33.test.reflect.v4.ClassesTest$Base",
                 "class de.team33.test.reflect.v4.ClassesTest$Super",
                 "class de.team33.test.reflect.v4.ClassesTest$Inner"),
-                Classes.wide(Inner.class).map(Class::toString).collect(Collectors.toList()));
+                Classes.wideStreamOf(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
     private static class Inner extends Super implements ISuper2 {

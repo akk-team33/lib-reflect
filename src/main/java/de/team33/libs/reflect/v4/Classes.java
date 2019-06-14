@@ -24,7 +24,7 @@ public class Classes {
     }
 
     private static Stream<Class<?>> superClass(final Class<?> subClass) {
-        return optional(subClass.getSuperclass());
+        return streamOf(subClass.getSuperclass());
     }
 
     private static Stream<Class<?>> superClasses(final Class<?> subClass) {
@@ -35,28 +35,28 @@ public class Classes {
      * Streams a given class that may be {@code null}.
      * In that case, the result is empty, otherwise it contains exactly the one given class.
      */
-    public static Stream<Class<?>> optional(final Class<?> subject) {
+    public static Stream<Class<?>> streamOf(final Class<?> subject) {
         return (null == subject) ? Stream.empty() : Stream.of(subject);
     }
 
     /**
      * Streams a class hierarchy that focuses on a given class and its superclasses but not its superinterfaces.
      *
-     * @see #optional(Class)
-     * @see #wide(Class)
+     * @see #streamOf(Class)
+     * @see #wideStreamOf(Class)
      */
-    public static Stream<Class<?>> deep(final Class<?> subject) {
+    public static Stream<Class<?>> deepStreamOf(final Class<?> subject) {
         return (null == subject) ? Stream.empty() :
-                Stream.concat(deep(subject.getSuperclass()), Stream.of(subject));
+                Stream.concat(deepStreamOf(subject.getSuperclass()), Stream.of(subject));
     }
 
     /**
      * Streams a class hierarchy that focuses on a given class, its superclasses and its superinterfaces.
      *
-     * @see #optional(Class)
-     * @see #deep(Class)
+     * @see #streamOf(Class)
+     * @see #deepStreamOf(Class)
      */
-    public static Stream<Class<?>> wide(final Class<?> subject) {
+    public static Stream<Class<?>> wideStreamOf(final Class<?> subject) {
         return broad(subject).distinct();
     }
 

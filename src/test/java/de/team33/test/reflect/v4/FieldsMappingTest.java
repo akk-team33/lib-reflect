@@ -1,5 +1,7 @@
 package de.team33.test.reflect.v4;
 
+import static java.util.stream.Collectors.toMap;
+
 import static org.junit.Assert.assertEquals;
 
 import java.lang.reflect.Field;
@@ -8,18 +10,23 @@ import java.util.Arrays;
 import java.util.Map;
 import java.util.TreeSet;
 
-import de.team33.libs.reflect.v4.FieldMapping;
 import de.team33.libs.reflect.v4.Fields;
+import de.team33.libs.reflect.v4.Fields.Naming;
+import de.team33.libs.reflect.v4.Fields.Streaming;
 import org.junit.Test;
 
 
-public class FieldMappingTest
+public class FieldsMappingTest
 {
+
+  private static final Fields.Mapping ALL_WIDE = type -> Streaming.WIDE.apply(type)
+                                                                       .collect(toMap(Naming.qualified(type),
+                                                                                      field -> field));
 
   @Test
   public void significantFlat()
   {
-    final Map<String, Field> result = FieldMapping.SIGNIFICANT_FLAT.apply(FieldsTest.Sub.class);
+    final Map<String, Field> result = Fields.Mapping.SIGNIFICANT_FLAT.apply(FieldsTest.Sub.class);
     assertEquals(Arrays.asList("privateFinalInt", "privateInt"),
                  new ArrayList<>(new TreeSet<>(result.keySet())));
   }
@@ -27,7 +34,7 @@ public class FieldMappingTest
   @Test
   public void significantDeep()
   {
-    final Map<String, Field> result = FieldMapping.SIGNIFICANT_DEEP.apply(FieldsTest.Sub.class);
+    final Map<String, Field> result = Fields.Mapping.SIGNIFICANT_DEEP.apply(FieldsTest.Sub.class);
     assertEquals(Arrays.asList("..privateFinalInt",
                                "..privateInt",
                                ".privateFinalInt",
@@ -39,8 +46,7 @@ public class FieldMappingTest
   @Test
   public void allWide()
   {
-    final Map<String, Field> result = new FieldMapping(Fields.Streaming.WIDE,
-                                                       Fields.Naming.Hierarchical.QUALIFIED).apply(FieldsTest.Sub.class);
+    final Map<String, Field> result = ALL_WIDE.apply(FieldsTest.Sub.class);
     assertEquals(Arrays.asList("de.team33.test.reflect.v4.FieldsTest.ISuper1.privateFinalInt",
                                "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateInt",
                                "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateStaticFinalInt",
