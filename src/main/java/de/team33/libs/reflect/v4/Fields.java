@@ -4,7 +4,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -15,7 +14,10 @@ import static java.util.stream.Collectors.toMap;
 /**
  * Utility for dealing with fields.
  */
-public class Fields {
+public final class Fields {
+
+    private Fields() {
+    }
 
     /**
      * Streams all {@link Field}s straightly declared by a given {@link Class}
