@@ -17,7 +17,7 @@ public class Classes {
      * {@code <superClass>}, where the distance of a class to itself is always 0.
      *
      * @throws IllegalArgumentException if {@code <subject>} ist not a derivative of {@code <superClass>}.
-     * @throws NullPointerException if one of the given Arguments is {@code null}.
+     * @throws NullPointerException     if one of the given Arguments is {@code null}.
      */
     public static int distance(final Class<?> subject, final Class<?> superClass) {
         return new Distance(superClass, superClass.isInterface() ? WIDE : DEEP).from(subject);
@@ -33,14 +33,16 @@ public class Classes {
 
     /**
      * Streams a given class that may be {@code null}.
-     * In that case, the result is empty, otherwise it contains exactly the one given class.
+     * In that case, the resulting {@link Stream} is empty, otherwise it contains exactly the one given class.
      */
     public static Stream<Class<?>> streamOf(final Class<?> subject) {
         return (null == subject) ? Stream.empty() : Stream.of(subject);
     }
 
     /**
-     * Streams a class hierarchy that focuses on a given class and its superclasses but not its superinterfaces.
+     * Streams a {@link Class} hierarchy. This method focuses on a given {@link Class} and its
+     * {@linkplain Class#getSuperclass() superclasses}, but not on its
+     * {@linkplain Class#getInterfaces() superinterfaces}.
      *
      * @see #streamOf(Class)
      * @see #wideStreamOf(Class)
@@ -51,7 +53,8 @@ public class Classes {
     }
 
     /**
-     * Streams a class hierarchy that focuses on a given class, its superclasses and its superinterfaces.
+     * Streams a {@link Class} hierarchy. This method includes the given {@link Class}, its
+     * {@linkplain Class#getSuperclass() superclasses} and its {@linkplain Class#getInterfaces() superinterfaces}.
      *
      * @see #streamOf(Class)
      * @see #deepStreamOf(Class)

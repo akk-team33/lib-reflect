@@ -89,10 +89,8 @@ public class FieldsFilterTest {
 
     @Test
     public final void INSTANCE() {
-        sampleFields(Fields.Filter.INSTANCE)
-                .forEach(field -> assertFalse(Modifier.isStatic(field.getModifiers())));
-        sampleFields(Fields.Filter.INSTANCE.negate())
-                .forEach(field -> assertTrue(Modifier.isStatic(field.getModifiers())));
+        Fields.wideStreamOf(FieldsTest.ISuper2.class).forEach(field ->
+                assertFalse(field.toString(), Fields.Filter.INSTANCE.test(field)));
     }
 
     @Test

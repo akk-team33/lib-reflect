@@ -4,11 +4,11 @@ import de.team33.libs.reflect.v4.Fields;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 
 public class FieldsTest {
@@ -114,7 +114,7 @@ public class FieldsTest {
                         "privateFinalInt",
                         "privateInt"),
                 Fields.deepStreamOf(Sub.class)
-                        .map(Fields.Naming.qualified(Sub.class))
+                        .map(Fields.Naming.conditional(Sub.class))
                         .collect(Collectors.toList())
         );
     }
@@ -141,7 +141,16 @@ public class FieldsTest {
         );
     }
 
-    private interface ISuper1 {
+    @Test
+    public void canonicalName() {
+        Fields.flatStreamOf(Sub.class).forEach(field -> {
+            final String canonicalName = Fields.canonicalName(field);
+            assertTrue(canonicalName.startsWith(Sub.class.getCanonicalName()));
+            assertTrue(canonicalName.endsWith(field.getName()));
+        });
+    }
+
+    interface ISuper1 {
 
         int privateStaticFinalInt = 0;
 
@@ -153,7 +162,7 @@ public class FieldsTest {
     }
 
 
-    private interface ISuper2 extends ISuper1 {
+    interface ISuper2 extends ISuper1 {
 
         int privateStaticFinalInt = 0;
 
@@ -164,7 +173,7 @@ public class FieldsTest {
         int privateInt = 0;
     }
 
-    private static class Inner extends Super implements ISuper1, ISuper2 {
+    static class Inner extends Super implements ISuper1, ISuper2 {
 
         private static final int privateStaticFinalInt = 0;
 
@@ -196,7 +205,7 @@ public class FieldsTest {
         }
     }
 
-    private static class Super {
+    static class Super {
 
         private static final int privateStaticFinalInt = 0;
 

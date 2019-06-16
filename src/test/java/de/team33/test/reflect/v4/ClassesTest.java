@@ -94,15 +94,6 @@ public class ClassesTest {
                 Classes.wideStreamOf(Inner.class).map(Class::toString).collect(Collectors.toList()));
     }
 
-    private static class Inner extends Super implements ISuper2 {
-    }
-
-    private static class Super extends Base implements ISuper1 {
-    }
-
-    private static class Base implements ISuper3 {
-    }
-
     private interface ISuper1 {
     }
 
@@ -110,5 +101,14 @@ public class ClassesTest {
     }
 
     private interface ISuper3 {
+    }
+
+    private static class Inner extends Super implements ISuper2 {
+    }
+
+    private static class Super extends Base implements ISuper1 {
+    }
+
+    private static class Base implements ISuper3 {
     }
 }
