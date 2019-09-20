@@ -23,13 +23,15 @@ public class Methods {
   @FunctionalInterface
   public interface Filter extends Predicate<Method> {
 
-    Filter GETTERS = method -> {
+    Filter CONSTANT = method -> 0 == method.getParameterCount();
+
+    Filter GETTERS = CONSTANT /*{
       final String name = method.getName();
       return (0 == method.getParameterCount())
              && !Void.TYPE.equals(method.getReturnType())
              && name.startsWith(GETTER_PREFIX)
              && !GETTER_BLACKLIST.contains(name);
-    };
+    }*/;
   }
 
   @FunctionalInterface
