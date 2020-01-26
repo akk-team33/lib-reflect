@@ -97,6 +97,12 @@ public final class Fields {
         Filter TRANSIENT = field -> Modifier.isTransient(field.getModifiers());
 
         /**
+         * Defines a filter accepting all synthetic fields.
+         * Caution: this filter uses an undocumented feature.
+         */
+        Filter SYNTHETIC = field -> 0 != (0x00001000 & field.getModifiers());
+
+        /**
          * Defines a filter accepting all instance-fields (non-static fields).
          */
         Filter INSTANCE = field -> STATIC.negate().test(field);
@@ -105,7 +111,7 @@ public final class Fields {
          * Defines a filter accepting all but static or transient fields.
          * Those fields should be significant for a type with value semantics.
          */
-        Filter SIGNIFICANT = field -> STATIC.or(TRANSIENT).negate().test(field);
+        Filter SIGNIFICANT = field -> STATIC.or(TRANSIENT).or(SYNTHETIC).negate().test(field);
     }
 
     /**
@@ -218,7 +224,6 @@ public final class Fields {
          */
         Mapping SIGNIFICANT_DEEP = type -> Streaming.SIGNIFICANT_DEEP.apply(type)
                 .peek(field -> field.setAccessible(true))
-                .collect(toMap(Naming.compact(type),
-                        field -> field));
+                .collect(toMap(Naming.compact(type), field -> field));
     }
 }
