@@ -13,9 +13,9 @@ import java.util.Map;
 public class PropertiesTest {
 
     private static final Properties<AnyBean> BI_PROPERTIES = Properties.builder(AnyBean.class)
-            .add(Property.setup("privateInt", AnyBean::getPrivateInt, AnyBean::setPrivateInt))
-            .add(Property.setup("privateString", AnyBean::getPrivateString, AnyBean::setPrivateString))
-            .add(Property.setup("privateDate", AnyBean::getPrivateDate, AnyBean::setPrivateDate))
+            .add(Property.simple("privateInt", AnyBean::getPrivateInt, AnyBean::setPrivateInt))
+            .add(Property.simple("privateString", AnyBean::getPrivateString, AnyBean::setPrivateString))
+            .add(Property.simple("privateDate", AnyBean::getPrivateDate, AnyBean::setPrivateDate))
             .build();
 
     @Test

@@ -5,11 +5,7 @@ import java.util.function.Function;
 
 public interface Property<T> {
 
-    static <T> Builder<T> builder() {
-        throw new UnsupportedOperationException("not yet implemented");
-    }
-
-    static <T, V> Property<T> setup(String name, Function<T, V> getter, BiConsumer<T, V> setter) {
+    static <T, V> Property<T> simple(String name, Function<T, V> getter, BiConsumer<T, V> setter) {
         return new Property<T>() {
             @Override
             public String getName() {
@@ -34,19 +30,4 @@ public interface Property<T> {
     Object get(T subject);
 
     void set(T target, Object value) throws ClassCastException, IllegalArgumentException;
-
-    class Builder<T> {
-
-        public final Property<T> build() {
-            throw new UnsupportedOperationException("not yet implemented");
-        }
-
-        public final Builder<T> setGetter(final Function<T, Object> getter) {
-            throw new UnsupportedOperationException("not yet implemented");
-        }
-
-        public final <V> Builder<T> setSetter(final BiConsumer<T, V> setter) {
-            throw new UnsupportedOperationException("not yet implemented");
-        }
-    }
 }
