@@ -6,8 +6,17 @@ import java.util.function.Function;
 
 import static java.lang.String.format;
 
+/**
+ * <p>A tool that can copy instances of a certain type field by field and also translate them into or from a map.</p>
+ * <p>To get an instance use {@link #factory(Function)} or {@link #FACTORY} and {@link Factory#apply(Class)}.</p>
+ *
+ * @param <T> the type of interest
+ */
 public class FieldMapper<T> {
 
+    /**
+     * A default {@link Factory} to get typical {@link FieldMapper} instances.
+     */
     public static final Factory FACTORY = factory(Fields.Mapping.SIGNIFICANT_DEEP);
 
     private static final String CANNOT_GET_FIELD = "cannot get value of field <%s> of instance <%s>";
@@ -19,6 +28,9 @@ public class FieldMapper<T> {
         this.mapping = mapping;
     }
 
+    /**
+     * A method to get a {@link Factory} that differs from the {@link #FACTORY default factory}.
+     */
     public static Factory factory(final Function<Class<?>, Map<String, Field>> mapping) {
         return new Factory() {
             @Override
@@ -44,23 +56,44 @@ public class FieldMapper<T> {
         }
     }
 
+    /**
+     * Copies the fields of an original instance of the underlying type into a corresponding target instance.
+     *
+     * @return the target instance.
+     */
     public final T copy(final T origin, final T target) {
         mapping.forEach((name, field) -> set(field, target, get(field, origin)));
         return target;
     }
 
+    /**
+     * Copies the fields of a source instance of the underlying type to a target map, which must be a mutable map.
+     *
+     * @return the target map.
+     */
     public final <M extends Map<String, Object>> M map(final T origin, final M target) {
         mapping.forEach((name, field) -> target.put(name, get(field, origin)));
         return target;
     }
 
+    /**
+     * Copies the values of an original map into a corresponding target instance of the underlying type.
+     *
+     * @return the target instance.
+     */
     public final T map(final Map<?, ?> origin, final T target) {
         mapping.forEach((name, field) -> set(field, target, origin.get(name)));
         return target;
     }
 
+    /**
+     * Abstracts a factory for {@link FieldMapper} instances.
+     */
     public interface Factory {
 
+        /**
+         * Creates a new {@link FieldMapper} instance for a given type.
+         */
         <T> FieldMapper<T> apply(Class<T> subjectClass);
     }
 }
