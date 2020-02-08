@@ -9,5 +9,5 @@
     <dependency>
       <groupId>de.team33.libs</groupId>
       <artifactId>lib-reflect</artifactId>
-      <version>8.4.3</version>
+      <version>8.4.4</version>
     </dependency>
