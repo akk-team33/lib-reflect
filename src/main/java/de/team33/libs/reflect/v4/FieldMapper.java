@@ -7,15 +7,16 @@ import java.util.function.Function;
 import static java.lang.String.format;
 
 /**
- * <p>A tool that can copy instances of a certain type field by field and also translate them into or from a map.</p>
- * <p>To get an instance use {@link #factory(Function)} or {@link #FACTORY} and {@link Factory#apply(Class)}.</p>
+ * <p>A tool that can copy instances of a certain type field by field or translate them into or from a map.</p>
+ * <p>To get an instance use {@link #factory(Function)} or {@link #FACTORY} and {@link Factory#mapperFor(Class)}.</p>
  *
  * @param <T> the type of interest
  */
-public class FieldMapper<T> {
+public final class FieldMapper<T> {
 
     /**
-     * A default {@link Factory} to get typical {@link FieldMapper} instances.
+     * A default {@link Factory} to get typical {@link FieldMapper} instances that take into account all non-transient
+     * instance fields of a given class and its superclasses (if any).
      */
     public static final Factory FACTORY = factory(Fields.Mapping.SIGNIFICANT_DEEP);
 
@@ -34,7 +35,7 @@ public class FieldMapper<T> {
     public static Factory factory(final Function<Class<?>, Map<String, Field>> mapping) {
         return new Factory() {
             @Override
-            public <T> FieldMapper<T> apply(final Class<T> subjectClass) {
+            public <T> FieldMapper<T> mapperFor(final Class<T> subjectClass) {
                 return new FieldMapper<T>(mapping.apply(subjectClass));
             }
         };
@@ -94,6 +95,6 @@ public class FieldMapper<T> {
         /**
          * Creates a new {@link FieldMapper} instance for a given type.
          */
-        <T> FieldMapper<T> apply(Class<T> subjectClass);
+        <T> FieldMapper<T> mapperFor(Class<T> subjectClass);
     }
 }

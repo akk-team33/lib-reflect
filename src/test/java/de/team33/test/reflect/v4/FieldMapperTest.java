@@ -17,7 +17,7 @@ import static org.junit.Assert.assertEquals;
 public class FieldMapperTest {
 
     private Random random = new Random();
-    private FieldMapper<Sample> subject = FieldMapper.FACTORY.apply(Sample.class);
+    private FieldMapper<Sample> subject = FieldMapper.FACTORY.mapperFor(Sample.class);
 
     @Test
     public void copy() {
@@ -37,12 +37,14 @@ public class FieldMapperTest {
 
     @Test
     public void mapFromMap() {
-        final Map<?, ?> origin = ImmutableMap.builder()
-                                             .put("privateFinalInt", anyInt())
-                                             .put("privateFinalDouble", anyDouble())
-                                             .put("privateFinalString", anyString())
-                                             .put("privateFinalDate", anyDate())
-                                             .build();
+        final Map<?, ?> origin = new TreeMap<>(ImmutableMap.builder()
+                                                           .put(".privateFinalInt", anyInt())
+                                                           .put(".privateFinalDouble", anyDouble())
+                                                           .put("privateFinalInt", anyInt())
+                                                           .put("privateFinalDouble", anyDouble())
+                                                           .put("privateFinalString", anyString())
+                                                           .put("privateFinalDate", anyDate())
+                                                           .build());
         final Sample stage = subject.map(origin, new Sample());
         final Map<?, ?> result = subject.map(stage, new TreeMap<>());
         assertEquals(origin, result);
@@ -64,15 +66,35 @@ public class FieldMapperTest {
         return new Date(random.nextInt());
     }
 
+    private static List<Object> superSampleFields(final SuperSample sample) {
+        return Arrays.asList(
+                sample.privateFinalInt,
+                sample.privateFinalDouble);
+    }
+
     private static List<Object> sampleFields(final Sample sample) {
         return Arrays.asList(
+                superSampleFields(sample),
                 sample.privateFinalInt,
                 sample.privateFinalDouble,
                 sample.privateFinalString,
                 sample.privateFinalDate);
     }
 
-    private class Sample {
+    private class SuperSample {
+
+        private final int privateFinalInt;
+        private final Double privateFinalDouble;
+        private final transient String privateFinalString;
+
+        private SuperSample() {
+            privateFinalInt = anyInt();
+            privateFinalDouble = anyDouble();
+            this.privateFinalString = anyString();
+        }
+    }
+
+    private class Sample extends SuperSample {
 
         private final int privateFinalInt;
         private final Double privateFinalDouble;
