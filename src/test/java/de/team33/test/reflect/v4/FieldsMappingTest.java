@@ -6,10 +6,7 @@ import de.team33.libs.reflect.v4.Fields.Streaming;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Map;
-import java.util.TreeSet;
+import java.util.*;
 
 import static java.util.stream.Collectors.toMap;
 import static org.junit.Assert.assertEquals;
@@ -18,8 +15,9 @@ import static org.junit.Assert.assertEquals;
 public class FieldsMappingTest {
 
     private static final Fields.Mapping ALL_WIDE = type -> Streaming.WIDE.apply(type)
-            .collect(toMap(Naming.conditional(type),
-                    field -> field));
+                                                                         .collect(TreeMap::new,
+                                                                                 (map, field) -> map.put(Fields.compactName(type, field), field), Map::putAll);
+            //.collect(toMap(Naming.compact(type), field -> field));
 
     @Test
     public void significantFlat() {
@@ -42,7 +40,8 @@ public class FieldsMappingTest {
     @Test
     public void allWide() {
         final Map<String, Field> result = ALL_WIDE.apply(FieldsTest.Sub.class);
-        assertEquals(Arrays.asList("de.team33.test.reflect.v4.FieldsTest.ISuper1.privateFinalInt",
+        final List<String> expected = Arrays.asList(
+                "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateFinalInt",
                 "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateInt",
                 "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateStaticFinalInt",
                 "de.team33.test.reflect.v4.FieldsTest.ISuper1.privateStaticInt",
@@ -58,9 +57,13 @@ public class FieldsMappingTest {
                 "de.team33.test.reflect.v4.FieldsTest.Super.privateInt",
                 "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticFinalInt",
                 "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticInt",
+                "de.team33.test.reflect.v4.FieldsTest.Super.privateTransientInt",
                 "privateFinalInt",
                 "privateInt",
                 "privateStaticFinalInt",
-                "privateStaticInt"), new ArrayList<>(new TreeSet<>(result.keySet())));
+                "this$0");
+        final ArrayList<String> actual = new ArrayList<>(new TreeSet<>(result.keySet()));
+//        assertEquals(expected.size(), actual.size());
+        assertEquals(expected, actual);
     }
 }

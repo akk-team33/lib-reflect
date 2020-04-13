@@ -21,7 +21,7 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.flatStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
+                Fields.Streaming.FLAT.apply(Inner.class).map(Field::toString).collect(Collectors.toList())
         );
     }
 
@@ -33,11 +33,12 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Super.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Super.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Super.privateInt",
+                        "private transient int de.team33.test.reflect.v4.FieldsTest$Super.privateTransientInt",
                         "private static final int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticFinalInt",
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.deepStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
+                Fields.Streaming.DEEP.apply(Inner.class).map(Field::toString).collect(Collectors.toList())
         );
     }
 
@@ -57,12 +58,35 @@ public class FieldsTest {
                         "private static int de.team33.test.reflect.v4.FieldsTest$Super.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Super.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Super.privateInt",
+                        "private transient int de.team33.test.reflect.v4.FieldsTest$Super.privateTransientInt",
                         "private static final int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticFinalInt",
                         "private static int de.team33.test.reflect.v4.FieldsTest$Inner.privateStaticInt",
                         "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
                         "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
-                Fields.wideStreamOf(Inner.class).map(Field::toString).collect(Collectors.toList())
-        );
+                Fields.Streaming.WIDE.apply(Inner.class).map(Field::toString).collect(Collectors.toList())
+                    );
+    }
+
+    @Test
+    public void significantFlat() {
+        assertEquals(
+                Arrays.asList(
+                        "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
+                        "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
+                Fields.Streaming.SIGNIFICANT_FLAT.apply(Inner.class).map(Field::toString).collect(Collectors.toList())
+                    );
+    }
+
+    @Test
+    public void significantDeep() {
+        assertEquals(
+                Arrays.asList(
+                        "private final int de.team33.test.reflect.v4.FieldsTest$Super.privateFinalInt",
+                        "private int de.team33.test.reflect.v4.FieldsTest$Super.privateInt",
+                        "private final int de.team33.test.reflect.v4.FieldsTest$Inner.privateFinalInt",
+                        "private int de.team33.test.reflect.v4.FieldsTest$Inner.privateInt"),
+                Fields.Streaming.SIGNIFICANT_DEEP.apply(Inner.class).map(Field::toString).collect(Collectors.toList())
+                    );
     }
 
     @Test
@@ -73,6 +97,7 @@ public class FieldsTest {
                         "privateStaticInt",
                         "privateFinalInt",
                         "privateInt",
+                        "privateTransientInt",
                         "privateStaticFinalInt",
                         "privateStaticInt",
                         "privateFinalInt",
@@ -89,6 +114,7 @@ public class FieldsTest {
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateInt",
+                        "de.team33.test.reflect.v4.FieldsTest.Super.privateTransientInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateFinalInt",
@@ -105,12 +131,12 @@ public class FieldsTest {
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateStaticInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Super.privateInt",
+                        "de.team33.test.reflect.v4.FieldsTest.Super.privateTransientInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateStaticInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateFinalInt",
                         "de.team33.test.reflect.v4.FieldsTest.Inner.privateInt",
                         "privateStaticFinalInt",
-                        "privateStaticInt",
                         "privateFinalInt",
                         "privateInt"),
                 Fields.deepStreamOf(Sub.class)
@@ -127,12 +153,12 @@ public class FieldsTest {
                         "..privateStaticInt",
                         "..privateFinalInt",
                         "..privateInt",
+                        "..privateTransientInt",
                         ".privateStaticFinalInt",
                         ".privateStaticInt",
                         ".privateFinalInt",
                         ".privateInt",
                         "privateStaticFinalInt",
-                        "privateStaticInt",
                         "privateFinalInt",
                         "privateInt"),
                 Fields.deepStreamOf(Sub.class)
@@ -150,6 +176,7 @@ public class FieldsTest {
         });
     }
 
+    @SuppressWarnings("unused")
     interface ISuper1 {
 
         int privateStaticFinalInt = 0;
@@ -161,7 +188,7 @@ public class FieldsTest {
         int privateInt = 0;
     }
 
-
+    @SuppressWarnings("unused")
     interface ISuper2 extends ISuper1 {
 
         int privateStaticFinalInt = 0;
@@ -173,12 +200,14 @@ public class FieldsTest {
         int privateInt = 0;
     }
 
+    @SuppressWarnings("unused")
     static class Inner extends Super implements ISuper1, ISuper2 {
 
         private static final int privateStaticFinalInt = 0;
 
         private static int privateStaticInt;
 
+        @SuppressWarnings("FieldCanBeLocal")
         private final int privateFinalInt;
 
         private int privateInt;
@@ -189,12 +218,12 @@ public class FieldsTest {
         }
     }
 
-    static class Sub extends Inner implements ISuper1, ISuper2 {
+    @SuppressWarnings("unused")
+    class Sub extends Inner implements ISuper1, ISuper2 {
 
         private static final int privateStaticFinalInt = 0;
 
-        private static int privateStaticInt;
-
+        @SuppressWarnings("FieldCanBeLocal")
         private final int privateFinalInt;
 
         private int privateInt;
@@ -205,15 +234,19 @@ public class FieldsTest {
         }
     }
 
+    @SuppressWarnings("unused")
     static class Super {
 
         private static final int privateStaticFinalInt = 0;
 
         private static int privateStaticInt;
 
+        @SuppressWarnings("FieldCanBeLocal")
         private final int privateFinalInt;
 
         private int privateInt;
+
+        private transient int privateTransientInt;
 
         private Super(final int privateFinalInt) {
             this.privateFinalInt = privateFinalInt;

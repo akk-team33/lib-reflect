@@ -3,9 +3,9 @@ package de.team33.libs.reflect.v4;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toMap;
@@ -15,6 +15,9 @@ import static java.util.stream.Collectors.toMap;
  * Utility for dealing with fields.
  */
 public final class Fields {
+
+    private static final String INITIAL_PREFIX = "";
+    private static final Function<String, String> ADD_PREFIX = "."::concat;
 
     private Fields() {
     }
@@ -39,6 +42,41 @@ public final class Fields {
      */
     public static Stream<Field> wideStreamOf(final Class<?> type) {
         return streamOf(Classes.wideStreamOf(type));
+    }
+
+    /**
+     * <p>Determines an extended field name that is as compact as possible but unique in the context of a certain class
+     * and its class hierarchy.</p>
+     *
+     * <p>This takes into account the fact that different fields of the same name can be declared within a class
+     * hierarchy.</p>
+     *
+     * <ul>
+     *     <li>If the field is declared directly in the context class, the
+     *     {@linkplain Field#getName() simple field name} results.</li>
+     *     <li>If the field is declared in a super class of the context class, the name is preceded by as many dots
+     *     ('.') as it corresponds to the hierarchy level of the declaring class compared to the context class.</li>
+     *     <li>If the field is declared in a class that is not a direct or indirect superclass of the context class,
+     *     the result is a fully qualified field name.</li>
+     * </ul>
+     */
+    public static String compactName(final Class<?> contextClass, final Field field) {
+        final Class<?> declaringClass = field.getDeclaringClass();
+        return prefix(contextClass, declaringClass)
+                .orElseGet(() -> declaringClass.getCanonicalName() + ".")
+                .concat(field.getName());
+    }
+
+    private static Optional<String> prefix(final Class<?> contextClass, final Class<?> declaringClass) {
+        return (null == contextClass)
+                ? Optional.empty()
+                : _prefix(contextClass, declaringClass);
+    }
+
+    private static Optional<String> _prefix(final Class<?> contextClass, final Class<?> declaringClass) {
+        return contextClass.equals(declaringClass)
+                ? Optional.of(INITIAL_PREFIX)
+                : prefix(contextClass.getSuperclass(), declaringClass).map(ADD_PREFIX);
     }
 
     /**
@@ -131,16 +169,13 @@ public final class Fields {
         Naming CANONICAL = Fields::canonicalName;
 
         /**
-         * Returns a {@link Function} that returns the plain {@linkplain Field#getName() name} of a particular field
-         * preceded by a prefix. The prefix consists of a sequence of dots (".") whose length reflects the hierarchy
-         * depth of the declaring class of the field against a class given as a context. If the class given as context
-         * is the declaring class of the field, then the prefix has the length zero, so that the resulting name is
-         * finally the same as the simple name of the {@link Field}.
+         * Returns a {@link Function} that retrieves a field name that is short but unique in the context of a
+         * particular class.
+         *
+         * @see Fields#compactName(Class, Field)
          */
         static Naming compact(final Class<?> context) {
-            return field -> Stream.generate(() -> ".")
-                    .limit(Classes.distance(context, field.getDeclaringClass()))
-                    .collect(Collectors.joining("", "", field.getName()));
+            return field -> compactName(context, field);
         }
 
         /**
@@ -225,5 +260,8 @@ public final class Fields {
         Mapping SIGNIFICANT_DEEP = type -> Streaming.SIGNIFICANT_DEEP.apply(type)
                 .peek(field -> field.setAccessible(true))
                 .collect(toMap(Naming.compact(type), field -> field));
+    }
+
+    private static class CompactNameException extends RuntimeException {
     }
 }
